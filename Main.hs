@@ -37,7 +37,7 @@ data Asteroid = Asteroid
      { size :: Int
      , aLocation :: (Float, Float) -- location W.R.T (x and y axes)
      , aSpeed  :: (Float, Float)  -- speed W.R.T (x and y axes)
-     , radius :: Float        -- decide whatever the team see right (circle or quadrilateral)
+     , radius :: Float        -- decide on whatever the team see right (circle or quadrilateral)
      }
 
 data AsteroidsGame = Game  
