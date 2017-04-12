@@ -24,6 +24,9 @@ data Player = Player
     { degree :: Float            --  the degree will be W.R.T X-axis like this   (>)  <- space ship at degree 0
     , plSpeed  :: (Float, Float)  -- speed W.R.T (x and y axes)
     , plLocation :: (Float, Float) -- location W.R.T (x and y axes)
+    , rotating :: Int
+    , thrust :: Bool
+    , firing :: Int
     }
 
 
@@ -82,7 +85,9 @@ render game = pictures
   mkShip :: Color -> Color -> (Float, Float) -> Float -> Picture
   mkShip col col2 (x,y) degree = pictures
    [
+     translate x y $ color red $ arcSolid (degree+15) (degree+25) 45,
      translate x y $ color col $ arcSolid degree (degree+40) 40,
      translate x y $ color col2 $ arcSolid (degree+10) (degree+30) 35
+
    ]
 
