@@ -6,7 +6,7 @@ width, height, offset :: Int
 width = 1000
 height = 700
 offset = 100
-
+thrustMaxSpeed = 400       -- the thrust will speed up till reach max value
 window :: Display
 window = InWindow "Asteroids" (width, height) (offset, offset)
 
@@ -24,15 +24,19 @@ data Player = Player
     { degree :: Float            --  the degree will be W.R.T X-axis like this   (>)  <- space ship at degree 0
     , plSpeed  :: (Float, Float)  -- speed W.R.T (x and y axes)
     , plLocation :: (Float, Float) -- location W.R.T (x and y axes)
-    , rotating :: Int
-    , thrust :: Bool
-    , firing :: Int
+    , rotatingBy :: Int
+    , firingSpeed :: Int               -- fire speed for more fun :D
+    , isrotating :: Bool
+    , isFiring :: Bool
+    , projectiles :: [Projectile]
+    , firemode :: Int                  -- fire mode may be removed later 
     }
 
 
 data Projectile = Projectile
      { prSpeed  :: (Float, Float)  -- speed W.R.T (x and y axes)
      , prLocation :: (Float, Float) -- location W.R.T (x and y axes)
+     , prLifeTime :: Int
      }
 
 
@@ -45,26 +49,30 @@ data Asteroid = Asteroid
 
 data AsteroidsGame = Game  
      { player :: Player
-     , projectiles :: [Projectile]
      , asteroids   :: [Asteroid]
      }
 
 
 ------------------- Basic Functions --
 
---initialize the sta
+--initialize the states of the game
 initialState :: AsteroidsGame
 initialState = Game
    { player = initializePlayer
-     , projectiles = []
      , asteroids   = []
    }
 
 initializePlayer :: Player
 initializePlayer = Player
-    { degree = 250
+    { projectiles = []
+    , degree = 250
     , plSpeed = (0,0)
     , plLocation = (0,0)
+    , rotatingBy = 0
+    , firingSpeed  = 10
+    , isrotating = False
+    , isFiring    = False
+    , firemode = 1
     }
 
 -- the game foreach loop
