@@ -65,7 +65,7 @@ initialState = Game
 initializePlayer :: Player
 initializePlayer = Player
     { projectiles = []
-    , degree = 250
+    , degree = 0
     , plSpeed = (0,0)
     , plLocation = (0,0)
     , rotatingBy = 0
@@ -81,7 +81,22 @@ update seconds as = as
 
 -- handle game events like thrust button etc
 handleKeys :: Event -> AsteroidsGame -> AsteroidsGame
+handleKeys (EventKey (Char 'd') _ _ _) game = game { player = fuck (10) (player game)}
+handleKeys (EventKey (Char 'a') _ _ _) game = game { player = fuck (-10) (player game)}
+handleKeys (EventKey (Char 'w') _ _ _) game = game { player = move (10) (player game)}
+handleKeys (EventKey (Char 's') _ _ _) game = game { player = move (-10) (player game)}
 handleKeys _ game = game
+
+fuck :: Float -> Player -> Player
+fuck x player = player {degree = newdegree}
+ where 
+   newdegree = (degree player) + x
+
+move :: Float -> Player -> Player
+move x player = player {plLocation = newLocation}
+ where
+   cloc = (plLocation player)
+   newLocation = ( (fst cloc) , (snd cloc) + x)
 
 render :: AsteroidsGame  -- ^ The game state to render.
        -> Picture   -- ^ A picture of this game state.
@@ -93,9 +108,14 @@ render game = pictures
   mkShip :: Color -> Color -> (Float, Float) -> Float -> Picture
   mkShip col col2 (x,y) degree = pictures
    [
-     translate x y $ color red $ arcSolid (degree+15) (degree+25) 45,
-     translate x y $ color col $ arcSolid degree (degree+40) 40,
-     translate x y $ color col2 $ arcSolid (degree+10) (degree+30) 35
+     rotate degree (translate x y $ color red $ arcSolid 265 275 45),
+     rotate degree (translate x y $ color col $ arcSolid 250 290 40),
+     rotate degree (translate x y $ color col2 $ arcSolid 260 280 35)
+
+     --(translate x y $ color red $ arcSolid (degree + 15) (degree +25) 45),
+     --(translate x y $ color col $ arcSolid degree (degree+40) 40),
+     --(translate x y $ color col2 $ arcSolid (degree+10) (degree+30) 35)
+
 
    ]
 
