@@ -2,6 +2,7 @@ module Main(main) where
 import Graphics.Gloss
 import Graphics.Gloss.Interface.Pure.Game
 import DataTypes
+import MainMenu
 
 width, height, offset :: Int
 width = 1000
@@ -45,7 +46,8 @@ initializePlayer = Player
 
 -- the game foreach loop
 update :: Float -> AsteroidsGame -> AsteroidsGame 
-update seconds as = as
+update seconds game | (gameMode game) == Menu = updateMenue seconds game
+                    | otherwise = game
 
 -- handle game events like thrust button etc
 handleKeys :: Event -> AsteroidsGame -> AsteroidsGame
