@@ -1,6 +1,4 @@
 module DataTypes where
-import Graphics.Gloss
-import Graphics.Gloss.Interface.Pure.Game
 
 -------------------- the custom datatypes --  TODO :: decide if we should use deriving Show 
 data Player = Player 
