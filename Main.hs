@@ -47,11 +47,13 @@ data Asteroid = Asteroid
      , radius :: Float        -- decide on whatever the team see right (circle or quadrilateral)
      }
 
-data AsteroidsGame = Game  
+data AsteroidsGame = Game 
      { player :: Player
+     , gameMode :: GameMode
      , asteroids   :: [Asteroid]
      }
 
+data GameMode = Menu | Single | Cooperative | Versus
 
 ------------------- Basic Functions --
 
