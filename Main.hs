@@ -26,7 +26,8 @@ main = play window background fps initialState render handleKeys update
 initialState :: AsteroidsGame
 initialState = Game
    { player = initializePlayer
-     , asteroids   = []
+    , gameMode = Menu
+    , asteroids   = []
    }
 
 initializePlayer :: Player
