@@ -4,11 +4,13 @@ import Graphics.Gloss.Interface.Pure.Game
 import DataTypes
 import MainMenu
 import SinglePlayer
-width, height, offset :: Int
+width, height, offset, thrustMaxSpeed :: Int
 width = 1000
 height = 700
 offset = 100
 thrustMaxSpeed = 400       -- the thrust will speed up till reach max value
+rotationSpeed :: Float
+rotationSpeed = 10
 window :: Display
 window = InWindow "Asteroids" (width, height) (offset, offset)
 
@@ -37,7 +39,7 @@ initializePlayer = Player
     , degree = 250
     , plSpeed = (0,0)
     , plLocation = (0,0)
-    , rotatingBy = 0
+    , rotatingBy = rotationSpeed
     , firingSpeed  = 10
     , isrotating = False
     , isFiring    = False
@@ -50,27 +52,17 @@ update seconds game | (gameMode game) == Menu = updateMenue seconds game
                     | otherwise = updateSinglePlayerGame seconds game
 
 -- handle game events like thrust button etc
+
+
+--EventKey Key KeyState Modifiers (Float, Float) 
+--ref:: https://hackage.haskell.org/package/gloss-1.11.1.1/docs/Graphics-Gloss-Interface-IO-Game.html
 handleKeys :: Event -> AsteroidsGame -> AsteroidsGame
-handleKeys (EventKey (Char '1') _ _ _) game                            -- Enter singleplayer mode when press '1'
- | (gameMode game) == Menu = game {gameMode = Single}                  -- Only if he is in Menu mode
-handleKeys (EventKey (Char '2') _ _ _) game                            -- Enter cooperative mode when press '2'
- | (gameMode game) == Menu = game {gameMode = Cooperative}             -- Only if he is in Menu mode
-handleKeys (EventKey (Char '3') _ _ _) game                            -- Enter versus mode when press '3'
- | (gameMode game) == Menu = game {gameMode = Versus}                  -- Only if he is in Menu mode
-handleKeys (EventKey (Char 'q') _ _ _) game = game {gameMode = Menu}   -- Return to the menu and quit the game when press 'q'
+handleKeys event game
+                       | mode == Menu = handleMenuKeys event game
+                       | mode == Single = handleSingleplayerKeys event game
+                       | otherwise = game
+                  where mode = gameMode game
 
-handleKeys (EventKey (Char 'd') _ _ _) game                                -- Rotate the ship Clock-Wise when press 'd'
- | (gameMode game) /= Menu = game { player = rotatePl (-10) (player game)} -- Only if he is not in Menu mode
-handleKeys (EventKey (Char 'a') _ _ _) game                                -- Rotate the ship Anti_Clock-Wise when press 'a'
- | (gameMode game) /= Menu = game { player = rotatePl (10) (player game)}  -- Only if he is not in Menu mode
-
-handleKeys _ game = game
-
---The x value will be the rotatingBy value!
-rotatePl :: Float -> Player -> Player
-rotatePl x player = player {degree = newdegree}
- where 
-  newdegree = ((degree player) + x )
 
 render :: AsteroidsGame  --- update the render like the update function in order to behave like the update function
        -> Picture   
