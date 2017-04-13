@@ -3,7 +3,7 @@ import Graphics.Gloss
 import Graphics.Gloss.Interface.Pure.Game
 import DataTypes
 import MainMenu
-
+import SinglePlayer
 width, height, offset :: Int
 width = 1000
 height = 700
@@ -45,16 +45,16 @@ initializePlayer = Player
     }
 
 -- the game foreach loop
-update :: Float -> AsteroidsGame -> AsteroidsGame 
+update :: Float -> AsteroidsGame -> AsteroidsGame                        -- update the game according to the Game Mode
 update seconds game | (gameMode game) == Menu = updateMenue seconds game
-                    | otherwise = game
+                    | otherwise = updateSinglePlayerGame seconds game
 
 -- handle game events like thrust button etc
 handleKeys :: Event -> AsteroidsGame -> AsteroidsGame
 handleKeys _ game = game
 
-render :: AsteroidsGame  -- ^ The game state to render.
-       -> Picture   -- ^ A picture of this game state.
+render :: AsteroidsGame  --- update the render like the update function in order to behave like the the update function
+       -> Picture   
 render game = pictures
  [
    mkShip black white (plLocation (player game)) $ (degree (player game))
