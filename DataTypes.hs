@@ -29,7 +29,7 @@ data Asteroid = Asteroid
      }
 
 data AsteroidsGame = Game 
-     { player :: Player
+     { players :: [Player]
      , gameMode :: GameMode
      , asteroids   :: [Asteroid]
      }

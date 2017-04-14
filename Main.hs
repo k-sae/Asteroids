@@ -28,13 +28,13 @@ main = play window background fps initialState render handleKeys update
 --initialize the states of the game
 initialState :: AsteroidsGame
 initialState = Game
-   { player = initializePlayer
+   { players = initializePlayers
     , gameMode = Menu
     , asteroids   = []
    }
 
-initializePlayer :: Player
-initializePlayer = Player
+initializePlayers :: [Player]
+initializePlayers = [Player                  -- idk how this worked but it did :D 
     { projectiles = []
     , degree = 250
     , plSpeed = (0,0)
@@ -44,7 +44,7 @@ initializePlayer = Player
     , isrotating = False
     , isFiring    = False
     , firemode = 1
-    }
+    }]
 
 -- the game foreach loop
 update :: Float -> AsteroidsGame -> AsteroidsGame                        -- update the game according to the Game Mode
@@ -71,12 +71,12 @@ render game
    [
      translate (-450) 200 (text "(1)SinglePlayer"),
      translate (-450) 0 (text "(2)Cooperative"),
-     translate (-450) (-200) (text "(2)Versus")
+     translate (-450) (-200) (text "(3)Versus")   -- fixed this
    ]
 
  | otherwise = pictures
    [
-     mkShip black black (plLocation (player game)) $ (degree (player game))
+    mkShip black black (plLocation player) $ (degree player) | player <- (players game) -- Belal Check This  <-- :)
    ]
    where
     mkShip :: Color -> Color -> (Float, Float) -> Float -> Picture

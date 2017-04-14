@@ -13,6 +13,5 @@ handleMenuKeys (EventKey (Char '1') _ _ _) game =  game {gameMode = Single}  -- 
 handleMenuKeys (EventKey (Char '2') _ _ _) game  = game {gameMode = Cooperative}  -- Enter cooperative mode when press '2'
 
 handleMenuKeys (EventKey (Char '3') _ _ _) game  = game {gameMode = Versus}   -- Enter versus mode when press '3'
-                                              
-handleMenuKeys (EventKey (Char 'q') _ _ _) game = game {gameMode = Menu}   -- Return to the menu and quit the game when press 'q'
+                                             
 handleMenuKeys _ game = game
