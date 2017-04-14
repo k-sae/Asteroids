@@ -77,10 +77,11 @@ render game
     mkShip (plColor player) (plLocation player) $ (degree player) | player <- (players game) -- Belal Check This  <-- :)
    ]
    where
-    mkShip :: Color ->(Float, Float) -> Float -> Picture
+    mkShip :: Color -> (Float, Float) -> Float -> Picture
     mkShip col (x,y) degree = pictures
      [
-       translate x y $ color col $ sectorWire degree (degree+40) 40
+       translate x y $ color col $ solidArc (degree-20) (degree+20) 40,
+       translate x y $ color white $ solidArc (degree-10) (degree+10) 35
      ]
 
 

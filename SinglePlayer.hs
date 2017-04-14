@@ -36,11 +36,11 @@ verifyYLocation x
                  | otherwise = x
                    where a = fromIntegral height :: Float
 --------Events Hndling
-handleSingleplayerKeys (EventKey (Char 'd') Down _ _) game = game { players = updateRotationStates (-10) True (players game) 0}    -- Rotate the ship Clock-Wise when press 'd'
-handleSingleplayerKeys (EventKey (Char 'd') Up _ _) game = game { players = updateRotationStates (-10) False (players game) 0}
+handleSingleplayerKeys (EventKey (Char 'd') Down _ _) game = game { players = updateRotationStates (-5) True (players game) 0}    -- Rotate the ship Clock-Wise when press 'd'
+handleSingleplayerKeys (EventKey (Char 'd') Up _ _) game = game { players = updateRotationStates (-5) False (players game) 0}
 
-handleSingleplayerKeys (EventKey (Char 'a') Down _ _) game = game { players = updateRotationStates (10) True (players game) 0}   -- Rotate the ship Anti_Clock-Wise when press 'a'
-handleSingleplayerKeys (EventKey (Char 'a') Up _ _) game = game { players = updateRotationStates (10) False (players game) 0}
+handleSingleplayerKeys (EventKey (Char 'a') Down _ _) game = game { players = updateRotationStates (5) True (players game) 0}   -- Rotate the ship Anti_Clock-Wise when press 'a'
+handleSingleplayerKeys (EventKey (Char 'a') Up _ _) game = game { players = updateRotationStates (5) False (players game) 0}
 handleSingleplayerKeys (EventKey (Char 'q') _ _ _) game = game {gameMode = Menu}   -- Return to the menu and quit the game when press 'q'
 handleSingleplayerKeys (EventKey (Char 'w') _ _ _) game = game {players = [ updateSpeed player | player <- (players game)] }
 handleSingleplayerKeys _ game = game
@@ -57,5 +57,5 @@ updateRotationStatesHelper playerIndex startCount (p:players) rotationState x
                                                                            | otherwise = p:updateRotationStatesHelper playerIndex (startCount+1) players rotationState x
 updateSpeed :: Player -> Player
 updateSpeed player = player{plSpeed = newSpeed (plSpeed player)}
-            where newSpeed (x,y) = (x + (cos (degToRad ((degree player) - 160))), (y + (sin (degToRad ((degree player)-160)))))
+            where newSpeed (x,y) = (x + (cos (degToRad ((degree player) - 180))), (y + (sin (degToRad ((degree player)-180)))))
 
