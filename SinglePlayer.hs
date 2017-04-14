@@ -31,6 +31,7 @@ handleSingleplayerKeys _ game = game
 updateRotationStates :: Float -> Bool -> [Player] -> Int -> [Player] 
 updateRotationStates x rotationState players index = updateRotationStatesHelper index 0 players rotationState x
 
+--handle player interaction according to its index
 updateRotationStatesHelper ::  Int -> Int -> [Player] -> Bool -> Float-> [Player]
 updateRotationStatesHelper _ _ [] _ _ = [] 
 updateRotationStatesHelper playerIndex startCount (p:players) rotationState x
