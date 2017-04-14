@@ -1,6 +1,7 @@
 module Main(main) where
 import Graphics.Gloss
 import Graphics.Gloss.Interface.Pure.Game
+import Shapes
 import DataTypes
 import MainMenu
 import SinglePlayer
@@ -36,7 +37,7 @@ initialState = Game
 initializePlayers :: [Player]
 initializePlayers = [Player                  -- idk how this worked but it did :D 
     { projectiles = []
-    , degree = 250
+    , degree = 0
     , plSpeed = (0,0)
     , plLocation = (0,0)
     , rotatingBy = rotationSpeed
@@ -80,10 +81,12 @@ render game
     mkShip (plColor player) (plLocation player) $ (degree player) | player <- (players game) -- Belal Check This  <-- :)
    ]
    where
-    mkShip :: Color -> (Float, Float) -> Float -> Picture
+    mkShip :: Color ->(Float, Float) -> Float -> Picture
     mkShip col (x,y) degree = pictures
      [
-       translate x y $ color col $ sectorWire degree (degree+40) 40
+        translate x y $ color col $ solidArc (degree+250) (degree+290) 40
+      , translate x y $ color white $ solidArc (degree+260) (degree+280) 35
 
      ]
+
 
