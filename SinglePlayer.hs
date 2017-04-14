@@ -18,23 +18,23 @@ rotateBy player |(isrotating player) == True =  player {degree = newdegree}
  where newdegree = (rotatingBy player) + (degree player)
 
 updateLocation :: AsteroidsGame -> AsteroidsGame
-updateLocation game = game {players = [updateLocationBy player |player <-(players game)] }
-
-updateLocationBy player = player {plLocation = newLocation (plLocation player)}
-                       where newLocation (x,y) = (verifyXLocation (x + xvelocity (plSpeed player)),verifyYLocation(y + yvelocity (plSpeed player)))
+updateLocation game = game {players = [(updateLocationBy game player )|player <-(players game)] }
+updateLocationBy :: AsteroidsGame -> Player -> Player
+updateLocationBy game player = player {plLocation = newLocation (plLocation player)}
+                       where newLocation (x,y) = (verifyXLocation game (x + xvelocity (plSpeed player)),verifyYLocation game (y + yvelocity (plSpeed player)))
                              xvelocity (x,_) = x
                              yvelocity (_,y) = y
-verifyXLocation :: Float -> Float
-verifyXLocation x 
+verifyXLocation :: AsteroidsGame -> Float -> Float
+verifyXLocation game x 
                  | abs x >= a/2= -x
                  | otherwise = x
-                   where a = fromIntegral width :: Float
+                   where a = fromIntegral (gWidth game) :: Float
 
-verifyYLocation :: Float -> Float
-verifyYLocation x 
+verifyYLocation :: AsteroidsGame -> Float -> Float
+verifyYLocation game x 
                  | abs x >= a/2= -x
                  | otherwise = x
-                   where a = fromIntegral height :: Float
+                   where a = fromIntegral (gHeight game) :: Float
 --------Events Hndling
 handleSingleplayerKeys (EventKey (Char 'd') Down _ _) game = game { players = updateRotationStates (-5) True (players game) 0}    -- Rotate the ship Clock-Wise when press 'd'
 handleSingleplayerKeys (EventKey (Char 'd') Up _ _) game = game { players = updateRotationStates (-5) False (players game) 0}
@@ -43,6 +43,7 @@ handleSingleplayerKeys (EventKey (Char 'a') Down _ _) game = game { players = up
 handleSingleplayerKeys (EventKey (Char 'a') Up _ _) game = game { players = updateRotationStates (5) False (players game) 0}
 handleSingleplayerKeys (EventKey (Char 'q') _ _ _) game = game {gameMode = Menu}   -- Return to the menu and quit the game when press 'q'
 handleSingleplayerKeys (EventKey (Char 'w') _ _ _) game = game {players = [ updateSpeed player | player <- (players game)] }
+handleSingleplayerKeys (EventResize (w,h)) game = game {gWidth = w , gHeight = h}
 handleSingleplayerKeys _ game = game
 
 --The x value will be the rotatingBy value!
