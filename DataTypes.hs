@@ -1,4 +1,5 @@
 module DataTypes where
+import Graphics.Gloss
 
 -------------------- the custom datatypes --  TODO :: decide if we should use deriving Show 
 data Player = Player 
@@ -11,6 +12,7 @@ data Player = Player
     , isFiring :: Bool
     , projectiles :: [Projectile]
     , firemode :: Int                  -- fire mode may be removed later 
+    , plColor :: Color
     }
 
 

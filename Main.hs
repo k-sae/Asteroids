@@ -44,6 +44,7 @@ initializePlayers = [Player                  -- idk how this worked but it did :
     , isrotating = False
     , isFiring    = False
     , firemode = 1
+    , plColor = black
     }]
 
 -- the game foreach loop
@@ -76,14 +77,13 @@ render game
 
  | otherwise = pictures
    [
-    mkShip black black (plLocation player) $ (degree player) | player <- (players game) -- Belal Check This  <-- :)
+    mkShip (plColor player) (plLocation player) $ (degree player) | player <- (players game) -- Belal Check This  <-- :)
    ]
    where
-    mkShip :: Color -> Color -> (Float, Float) -> Float -> Picture
-    mkShip col col2 (x,y) degree = pictures
+    mkShip :: Color -> (Float, Float) -> Float -> Picture
+    mkShip col (x,y) degree = pictures
      [
-       translate x y $ color col $ sectorWire degree (degree+40) 40,
-       translate x y $ color col2 $ sectorWire (degree+10) (degree+30) 35
+       translate x y $ color col $ sectorWire degree (degree+40) 40
 
      ]
 
