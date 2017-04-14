@@ -45,5 +45,5 @@ updateRotationStatesHelper playerIndex startCount (p:players) rotationState x
                                                                            | otherwise = p:updateRotationStatesHelper playerIndex (startCount+1) players rotationState x
 updateSpeed :: Player -> Player
 updateSpeed player = player{plSpeed = newSpeed (plSpeed player)}
-            where newSpeed (x,y) = (x + (cos (degToRad (degree player))), degToRad (y + sin (degree player)))
+            where newSpeed (x,y) = (x + (cos (degToRad ((degree player) - 160))), (y + (sin (degToRad ((degree player)-160)))))
 

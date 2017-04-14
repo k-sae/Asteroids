@@ -84,9 +84,7 @@ render game
     mkShip :: Color ->(Float, Float) -> Float -> Picture
     mkShip col (x,y) degree = pictures
      [
-        translate x y $ color col $ solidArc (degree+250) (degree+290) 40
-      , translate x y $ color white $ solidArc (degree+260) (degree+280) 35
-
+       translate x y $ color col $ sectorWire degree (degree+40) 40
      ]
 
 
