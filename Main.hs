@@ -5,11 +5,7 @@ import Shapes
 import DataTypes
 import MainMenu
 import SinglePlayer
-width, height, offset, thrustMaxSpeed :: Int
-width = 1000
-height = 700
-offset = 100
-thrustMaxSpeed = 400       -- the thrust will speed up till reach max value
+
 rotationSpeed :: Float
 rotationSpeed = 10
 window :: Display

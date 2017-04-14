@@ -3,6 +3,8 @@ import Graphics.Gloss
 import Graphics.Gloss.Interface.Pure.Game
 import DataTypes
 import Graphics.Gloss.Geometry.Angle
+windowSize :: Float
+windowSize = 700
 ----------Game Updates
 updateSinglePlayerGame :: Float -> AsteroidsGame -> AsteroidsGame 
 updateSinglePlayerGame seconds = updateLocation . updateRotationSpeed 
@@ -19,10 +21,20 @@ updateLocation :: AsteroidsGame -> AsteroidsGame
 updateLocation game = game {players = [updateLocationBy player |player <-(players game)] }
 
 updateLocationBy player = player {plLocation = newLocation (plLocation player)}
-                       where newLocation (x,y) = (x + xvelocity (plSpeed player), y + yvelocity (plSpeed player))
+                       where newLocation (x,y) = (verifyXLocation (x + xvelocity (plSpeed player)),verifyYLocation(y + yvelocity (plSpeed player)))
                              xvelocity (x,_) = x
                              yvelocity (_,y) = y
+verifyXLocation :: Float -> Float
+verifyXLocation x 
+                 | abs x >= a/2= -x
+                 | otherwise = x
+                   where a = fromIntegral width :: Float
 
+verifyYLocation :: Float -> Float
+verifyYLocation x 
+                 | abs x >= a/2= -x
+                 | otherwise = x
+                   where a = fromIntegral height :: Float
 --------Events Hndling
 handleSingleplayerKeys (EventKey (Char 'd') Down _ _) game = game { players = updateRotationStates (-10) True (players game) 0}    -- Rotate the ship Clock-Wise when press 'd'
 handleSingleplayerKeys (EventKey (Char 'd') Up _ _) game = game { players = updateRotationStates (-10) False (players game) 0}
