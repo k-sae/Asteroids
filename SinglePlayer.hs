@@ -3,8 +3,8 @@ import Graphics.Gloss
 import Graphics.Gloss.Interface.Pure.Game
 import DataTypes
 import Graphics.Gloss.Geometry.Angle
-windowSize :: Float
-windowSize = 700
+
+
 ----------Game Updates
 updateSinglePlayerGame :: Float -> AsteroidsGame -> AsteroidsGame 
 updateSinglePlayerGame seconds = updateLocation . updateRotationSpeed 
@@ -36,11 +36,11 @@ verifyYLocation game x
                  | otherwise = x
                    where a = fromIntegral (gHeight game) :: Float
 --------Events Hndling
-handleSingleplayerKeys (EventKey (Char 'd') Down _ _) game = game { players = updateRotationStates (-5) True (players game) 0}    -- Rotate the ship Clock-Wise when press 'd'
-handleSingleplayerKeys (EventKey (Char 'd') Up _ _) game = game { players = updateRotationStates (-5) False (players game) 0}
+handleSingleplayerKeys (EventKey (Char 'd') Down _ _) game = game { players = updateRotationStates (-rotationSpeed) True (players game) 0}    -- Rotate the ship Clock-Wise when press 'd'
+handleSingleplayerKeys (EventKey (Char 'd') Up _ _) game = game { players = updateRotationStates (-rotationSpeed) False (players game) 0}
 
-handleSingleplayerKeys (EventKey (Char 'a') Down _ _) game = game { players = updateRotationStates (5) True (players game) 0}   -- Rotate the ship Anti_Clock-Wise when press 'a'
-handleSingleplayerKeys (EventKey (Char 'a') Up _ _) game = game { players = updateRotationStates (5) False (players game) 0}
+handleSingleplayerKeys (EventKey (Char 'a') Down _ _) game = game { players = updateRotationStates (rotationSpeed) True (players game) 0}   -- Rotate the ship Anti_Clock-Wise when press 'a'
+handleSingleplayerKeys (EventKey (Char 'a') Up _ _) game = game { players = updateRotationStates (rotationSpeed) False (players game) 0}
 handleSingleplayerKeys (EventKey (Char 'p') Down _ _) game = game {gameMode = Pause}   -- Pause the game when press 'p'
 handleSingleplayerKeys (EventKey (Char 'q') Down _ _) game = game {gameMode = Menu}   -- Return to the menu and quit the game when press 'q'
 handleSingleplayerKeys (EventKey (Char 'w') _ _ _) game = game {players = [ updateSpeed player | player <- (players game)] }

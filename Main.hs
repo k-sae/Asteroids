@@ -7,8 +7,6 @@ import MainMenu
 import Pause
 import SinglePlayer
 
-rotationSpeed :: Float
-rotationSpeed = 10
 window :: Display
 window = InWindow "Asteroids" (width, height) (offset, offset)
 

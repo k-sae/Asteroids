@@ -8,6 +8,9 @@ height = 700
 offset = 100
 thrustMaxSpeed = 400       -- the thrust will speed up till reach max value
 
+rotationSpeed :: Float
+rotationSpeed = 4
+
 data Player = Player 
     { degree :: Float            --  the degree will be W.R.T X-axis like this   (>)  <- space ship at degree 0
     , plSpeed  :: (Float, Float)  -- speed W.R.T (x and y axes)
