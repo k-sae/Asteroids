@@ -44,4 +44,4 @@ data AsteroidsGame = Game
      , asteroids   :: [Asteroid]
      }
 
-data GameMode = Menu | Single | Cooperative | Versus deriving Eq  -- deriving Eq so the gamemodes will be comparable
+data GameMode = Menu | Pause | Single | Cooperative | Versus deriving Eq  -- deriving Eq so the gamemodes will be comparable

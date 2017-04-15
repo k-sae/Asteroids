@@ -41,7 +41,8 @@ handleSingleplayerKeys (EventKey (Char 'd') Up _ _) game = game { players = upda
 
 handleSingleplayerKeys (EventKey (Char 'a') Down _ _) game = game { players = updateRotationStates (5) True (players game) 0}   -- Rotate the ship Anti_Clock-Wise when press 'a'
 handleSingleplayerKeys (EventKey (Char 'a') Up _ _) game = game { players = updateRotationStates (5) False (players game) 0}
-handleSingleplayerKeys (EventKey (Char 'q') _ _ _) game = game {gameMode = Menu}   -- Return to the menu and quit the game when press 'q'
+handleSingleplayerKeys (EventKey (Char 'p') Down _ _) game = game {gameMode = Pause}   -- Pause the game when press 'p'
+handleSingleplayerKeys (EventKey (Char 'q') Down _ _) game = game {gameMode = Menu}   -- Return to the menu and quit the game when press 'q'
 handleSingleplayerKeys (EventKey (Char 'w') _ _ _) game = game {players = [ updateSpeed player | player <- (players game)] }
 handleSingleplayerKeys (EventResize (w,h)) game = game {gWidth = w , gHeight = h}
 handleSingleplayerKeys _ game = game

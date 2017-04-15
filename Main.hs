@@ -4,6 +4,7 @@ import Graphics.Gloss.Interface.Pure.Game
 import Shapes
 import DataTypes
 import MainMenu
+import Pause
 import SinglePlayer
 
 rotationSpeed :: Float
@@ -48,7 +49,8 @@ initializePlayers = [Player                  -- idk how this worked but it did :
 
 -- the game foreach loop
 update :: Float -> AsteroidsGame -> AsteroidsGame                        -- update the game according to the Game Mode
-update seconds game | (gameMode game) == Menu = updateMenue seconds game
+update seconds game | (gameMode game) == Menu = updateMenue seconds initialState
+                    | (gameMode game) == Pause = updatePause seconds game
                     | otherwise = updateSinglePlayerGame seconds game
 
 -- handle game events like thrust button etc
@@ -59,6 +61,7 @@ update seconds game | (gameMode game) == Menu = updateMenue seconds game
 handleKeys :: Event -> AsteroidsGame -> AsteroidsGame
 handleKeys event game
                        | mode == Menu = handleMenuKeys event game
+                       | mode == Pause = handlePauseKeys event game
                        | mode == Single = handleSingleplayerKeys event game
                        | otherwise = game
                   where mode = gameMode game
@@ -69,9 +72,23 @@ render :: AsteroidsGame  --- update the render like the update function in order
 render game 
  | (gameMode game) == Menu = pictures
    [
-     translate (-450) 200 (text "(1)SinglePlayer"),
-     translate (-450) 0 (text "(2)Cooperative"),
-     translate (-450) (-200) (text "(3)Versus")   -- fixed this
+     translate (-400) 280 (text "--------"),
+     translate (-400) 200 (text "| Asteroids. |"),
+     translate (-400) 120 (text "--------"),
+     scale (0.5) (0.5) (translate (-450) 100 (text "(1)SinglePlayer")),
+     scale (0.5) (0.5) (translate (-450) (-100) (text "(2)Cooperative")),
+     scale (0.5) (0.5) (translate (-450) (-300) (text "(3)Versus"))
+   ]
+
+ | (gameMode game) == Pause = pictures
+   [
+     translate (-350) 280 (text "-------"),
+     translate (-350) 200 (text "| Paused. |"),
+     translate (-350) 120 (text "-------"),
+     scale (0.4) (0.4) (translate (-800) (100)  (text "(1)Continue as SinglePlayer")),
+     scale (0.4) (0.4) (translate (-800) (-100) (text "(2)Continue as Cooperative")),
+     scale (0.4) (0.4) (translate (-800) (-300) (text "(3)Continue as Versus")),
+     scale (0.4) (0.4) (translate (-800) (-500) (text "(q)Return to MainMenu"))
    ]
 
  | otherwise = pictures
