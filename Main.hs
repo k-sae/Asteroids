@@ -43,6 +43,7 @@ initializePlayers = [Player                  -- idk how this worked but it did :
     , isFiring    = False
     , firemode = 1
     , plColor = black
+    , isThrusting = False
     }]
 
 -- the game foreach loop
