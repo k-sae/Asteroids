@@ -92,14 +92,19 @@ render game
 
  | otherwise = pictures
    [
-    mkShip (plColor player) (plLocation player) $ (degree player) | player <- (players game) -- Belal Check This  <-- :)
+    mkShip (isThrusting player) (plColor player) (plLocation player) $ (degree player) | player <- (players game) -- Belal Check This  <-- :)
    ]
    where
-    mkShip :: Color -> (Float, Float) -> Float -> Picture
-    mkShip col (x,y) degree = pictures
+    mkShip :: Bool -> Color -> (Float, Float) -> Float -> Picture
+    mkShip False col (x,y) degree = pictures
      [
        translate x y $ color col $ solidArc (degree-20) (degree+20) 40,
        translate x y $ color white $ solidArc (degree-10) (degree+10) 35
      ]
-
+    mkShip True col (x,y) degree = pictures
+     [
+       translate x y $ color red $ solidArc (degree-5) (degree+5) 45,
+       translate x y $ color col $ solidArc (degree-20) (degree+20) 40,
+       translate x y $ color white $ solidArc (degree-10) (degree+10) 35
+     ]
 
