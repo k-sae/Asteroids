@@ -1,12 +1,12 @@
 module Main(main) where
 import Graphics.Gloss
 import Graphics.Gloss.Interface.Pure.Game
+import Shapes
+import DataTypes
+import MainMenu
+import Pause
+import SinglePlayer
 
-width, height, offset :: Int
-width = 1000
-height = 700
-offset = 100
-thrustMaxSpeed = 400       -- the thrust will speed up till reach max value
 window :: Display
 window = InWindow "Asteroids" (width, height) (offset, offset)
 
@@ -19,103 +19,92 @@ fps = 60
 main :: IO ()
 main = play window background fps initialState render handleKeys update
 
--------------------- the custom datatypes --  TODO :: decide if we should use deriving Show 
-data Player = Player 
-    { degree :: Float            --  the degree will be W.R.T X-axis like this   (>)  <- space ship at degree 0
-    , plSpeed  :: (Float, Float)  -- speed W.R.T (x and y axes)
-    , plLocation :: (Float, Float) -- location W.R.T (x and y axes)
-    , rotatingBy :: Int
-    , firingSpeed :: Int               -- fire speed for more fun :D
-    , isrotating :: Bool
-    , isFiring :: Bool
-    , projectiles :: [Projectile]
-    , firemode :: Int                  -- fire mode may be removed later 
-    }
-
-
-data Projectile = Projectile
-     { prSpeed  :: (Float, Float)  -- speed W.R.T (x and y axes)
-     , prLocation :: (Float, Float) -- location W.R.T (x and y axes)
-     , prLifeTime :: Int
-     }
-
-
-data Asteroid = Asteroid
-     { size :: Int
-     , aLocation :: (Float, Float) -- location W.R.T (x and y axes)
-     , aSpeed  :: (Float, Float)  -- speed W.R.T (x and y axes)
-     , radius :: Float        -- decide on whatever the team see right (circle or quadrilateral)
-     }
-
-data AsteroidsGame = Game  
-     { player :: Player
-     , asteroids   :: [Asteroid]
-     }
-
-
 ------------------- Basic Functions --
 
 --initialize the states of the game
 initialState :: AsteroidsGame
 initialState = Game
-   { player = initializePlayer
-     , asteroids   = []
+   { players = initializePlayers
+    , gameMode = Menu
+    , gWidth = width
+    , gHeight = height
+    , asteroids   = []
    }
 
-initializePlayer :: Player
-initializePlayer = Player
+initializePlayers :: [Player]
+initializePlayers = [Player                  -- idk how this worked but it did :D 
     { projectiles = []
     , degree = 0
     , plSpeed = (0,0)
     , plLocation = (0,0)
-    , rotatingBy = 0
+    , rotatingBy = rotationSpeed
     , firingSpeed  = 10
     , isrotating = False
     , isFiring    = False
     , firemode = 1
-    }
+    , plColor = black
+    , isThrusting = False
+    }]
 
 -- the game foreach loop
-update :: Float -> AsteroidsGame -> AsteroidsGame 
-update seconds as = as
+update :: Float -> AsteroidsGame -> AsteroidsGame                        -- update the game according to the Game Mode
+update seconds game | (gameMode game) == Menu = updateMenue seconds initialState
+                    | (gameMode game) == Pause = updatePause seconds game
+                    | otherwise = updateSinglePlayerGame seconds game
 
 -- handle game events like thrust button etc
+
+
+--EventKey Key KeyState Modifiers (Float, Float) 
+--ref:: https://hackage.haskell.org/package/gloss-1.11.1.1/docs/Graphics-Gloss-Interface-IO-Game.html
 handleKeys :: Event -> AsteroidsGame -> AsteroidsGame
-handleKeys (EventKey (Char 'd') _ _ _) game = game { player = fuck (10) (player game)}
-handleKeys (EventKey (Char 'a') _ _ _) game = game { player = fuck (-10) (player game)}
-handleKeys (EventKey (Char 'w') _ _ _) game = game { player = move (10) (player game)}
-handleKeys (EventKey (Char 's') _ _ _) game = game { player = move (-10) (player game)}
-handleKeys _ game = game
+handleKeys event game
+                       | mode == Menu = handleMenuKeys event game
+                       | mode == Pause = handlePauseKeys event game
+                       | mode == Single = handleSingleplayerKeys event game
+                       | otherwise = game
+                  where mode = gameMode game
 
-fuck :: Float -> Player -> Player
-fuck x player = player {degree = newdegree}
- where 
-   newdegree = (degree player) + x
 
-move :: Float -> Player -> Player
-move x player = player {plLocation = newLocation}
- where
-   cloc = (plLocation player)
-   newLocation = ( (fst cloc) , (snd cloc) + x)
-
-render :: AsteroidsGame  -- ^ The game state to render.
-       -> Picture   -- ^ A picture of this game state.
-render game = pictures
- [
-   mkShip black white (plLocation (player game)) $ (degree (player game))
- ]
- where
-  mkShip :: Color -> Color -> (Float, Float) -> Float -> Picture
-  mkShip col col2 (x,y) degree = pictures
+render :: AsteroidsGame  --- update the render like the update function in order to behave like the update function
+       -> Picture   
+render game 
+ | (gameMode game) == Menu = pictures
    [
-     rotate degree (translate x y $ color red $ arcSolid 265 275 45),
-     rotate degree (translate x y $ color col $ arcSolid 250 290 40),
-     rotate degree (translate x y $ color col2 $ arcSolid 260 280 35)
-
-     --(translate x y $ color red $ arcSolid (degree + 15) (degree +25) 45),
-     --(translate x y $ color col $ arcSolid degree (degree+40) 40),
-     --(translate x y $ color col2 $ arcSolid (degree+10) (degree+30) 35)
-
-
+     translate (-400) 280 (text "--------"),
+     translate (-400) 200 (text "| Asteroids. |"),
+     translate (-400) 120 (text "--------"),
+     scale (0.5) (0.5) (translate (-450) 100 (text "(1)SinglePlayer")),
+     scale (0.5) (0.5) (translate (-450) (-100) (text "(2)Cooperative")),
+     scale (0.5) (0.5) (translate (-450) (-300) (text "(3)Versus"))
    ]
+
+ | (gameMode game) == Pause = pictures
+   [
+     translate (-350) 280 (text "-------"),
+     translate (-350) 200 (text "| Paused. |"),
+     translate (-350) 120 (text "-------"),
+     scale (0.4) (0.4) (translate (-800) (100)  (text "(1)Continue as SinglePlayer")),
+     scale (0.4) (0.4) (translate (-800) (-100) (text "(2)Continue as Cooperative")),
+     scale (0.4) (0.4) (translate (-800) (-300) (text "(3)Continue as Versus")),
+     scale (0.4) (0.4) (translate (-800) (-500) (text "(q)Return to MainMenu"))
+   ]
+
+ | otherwise = pictures
+   [
+    mkShip (isThrusting player) (plColor player) (plLocation player) $ (degree player) | player <- (players game) -- Belal Check This  <-- :)
+   ]
+   where
+    mkShip :: Bool -> Color -> (Float, Float) -> Float -> Picture
+    mkShip False col (x,y) degree = pictures
+     [
+       translate x y $ color col $ solidArc (degree-20) (degree+20) 40,
+       translate x y $ color white $ solidArc (degree-10) (degree+10) 35
+     ]
+    mkShip True col (x,y) degree = pictures
+     [
+       translate x y $ color red $ solidArc (degree-5) (degree+5) 45,
+       translate x y $ color col $ solidArc (degree-20) (degree+20) 40,
+       translate x y $ color white $ solidArc (degree-10) (degree+10) 35
+     ]
 
