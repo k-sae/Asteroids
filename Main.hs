@@ -91,9 +91,22 @@ render game
    ]
 
  | otherwise = pictures
-   [
-    mkShip (isThrusting player) (plColor player) (plLocation player) $ (degree player) | player <- (players game) -- Belal Check This  <-- :)
-   ]
+   (
+    [
+      --polygon [(0,0),(0,40),(20,80),(80,80),(100,0),(0,0)],
+      --color white (polygon [(2,2),(2,38),(22,78),(78,78),(98,2),(2,2)])
+      --circleSolid 80,
+      --translate 20 20 (circle 10),
+      --translate (-20) (-20) (circle 10),
+      --translate (-20) (20) (circle 10),
+      --translate (20) (-20) (circle 10)
+      mkAst 80 (0,0)
+    ]
+    ++
+    [
+      mkShip (isThrusting player) (plColor player) (plLocation player) $ (degree player) | player <- (players game) -- Belal Check This  <-- :)
+    ]
+   )
    where
     mkShip :: Bool -> Color -> (Float, Float) -> Float -> Picture
     mkShip False col (x,y) degree = pictures
@@ -106,5 +119,15 @@ render game
        translate x y $ color red $ solidArc (degree-5) (degree+5) 45,
        translate x y $ color col $ solidArc (degree-20) (degree+20) 40,
        translate x y $ color white $ solidArc (degree-10) (degree+10) 35
+     ]
+
+    mkAst :: Float -> (Float, Float) -> Picture
+    mkAst r (x,y) = pictures
+     [
+       scale 1 (0.8) (translate x y $ color (greyN 0.6) (circleSolid r)),
+       scale 1 (0.8) (translate (x-(r/3)) (y+(r/3)) $ color (greyN 0.2) (circleSolid (r/5))),
+       scale 1 (0.8) (translate (x+(r/3)) (y+(r/3)) $ color (greyN 0.2) (circleSolid (r/5))),
+       scale 1 (0.8) (translate (x+(r/3)) (y-(r/3)) $ color (greyN 0.2) (circleSolid (r/5))),
+       scale 1 (0.8) (translate (x-(r/3)) (y-(r/3)) $ color (greyN 0.2) (circleSolid (r/5)))
      ]
 
