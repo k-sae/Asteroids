@@ -6,7 +6,9 @@ import DataTypes
 import MainMenu
 import Pause
 import SinglePlayer
-
+import Asteroids
+--functions in this file is responsible for finding the appropriate function according to mode
+-- see 'update' function as example 
 window :: Display
 window = InWindow "Asteroids" (width, height) (offset, offset)
 
@@ -48,7 +50,7 @@ initializePlayers = [Player                  -- idk how this worked but it did :
 
 -- the game foreach loop
 update :: Float -> AsteroidsGame -> AsteroidsGame                        -- update the game according to the Game Mode
-update seconds game | (gameMode game) == Menu = updateMenue seconds initialState
+update seconds game | (gameMode game) == Menu = updateMenu seconds initialState  -- call the update menue from MainMenu.hs file
                     | (gameMode game) == Pause = updatePause seconds game
                     | otherwise = updateSinglePlayerGame seconds game
 
@@ -59,7 +61,7 @@ update seconds game | (gameMode game) == Menu = updateMenue seconds initialState
 --ref:: https://hackage.haskell.org/package/gloss-1.11.1.1/docs/Graphics-Gloss-Interface-IO-Game.html
 handleKeys :: Event -> AsteroidsGame -> AsteroidsGame
 handleKeys event game
-                       | mode == Menu = handleMenuKeys event game
+                       | mode == Menu = handleMenuKeys event game          --same as the update function here u call the appropriate key events 
                        | mode == Pause = handlePauseKeys event game
                        | mode == Single = handleSingleplayerKeys event game
                        | otherwise = game
@@ -67,7 +69,7 @@ handleKeys event game
 
 
 render :: AsteroidsGame  --- update the render like the update function in order to behave like the update function
-       -> Picture   
+       -> Picture   --TODO BELBEL splite render function to different files for better organization
 render game 
  | (gameMode game) == Menu = pictures
    [
