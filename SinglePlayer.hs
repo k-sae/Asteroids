@@ -3,14 +3,16 @@ import Graphics.Gloss
 import Graphics.Gloss.Interface.Pure.Game
 import DataTypes
 import Graphics.Gloss.Geometry.Angle
-
+import Asteroids
 
 ----------Game Updates
 updateSinglePlayerGame :: Float -> AsteroidsGame -> AsteroidsGame 
 updateSinglePlayerGame seconds = updateGamePlayersStates 
 
-updateGamePlayersStates :: AsteroidsGame -> AsteroidsGame -- sry for doing this but its working :)
-updateGamePlayersStates game  = game {players = [(updateSpeed.rotateBy.updateLocationBy game) x|x <-(players game)] } 
+-- 'Function Composition'
+updateGamePlayersStates :: AsteroidsGame -> AsteroidsGame -- sry for doing this but its working :) 
+updateGamePlayersStates game  = game {players = [(updateSpeed.rotateBy.updateLocationBy game) x|x <-(players game)]
+                                     ,asteroids = [updateAsteroid asteroid | asteroid <- (asteroids game)] } 
 
 rotateBy :: Player -> Player 
 rotateBy player |(isrotating player) == True =  player {degree = newdegree}

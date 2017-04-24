@@ -7,3 +7,6 @@ import DataTypes
 -- import this file whenever u want to call one of its functions
 -- LASTLY NEVER EVER DELETE COMMENTS
 --  u can delete some code u r free to  do it  :D
+
+updateAsteroid :: asteroid -> asteroid --khaled edit this to fit the req
+updateAsteroid asteroid = asteroid
