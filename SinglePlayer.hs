@@ -9,7 +9,7 @@ updateSinglePlayerGame :: Float -> AsteroidsGame -> AsteroidsGame
 updateSinglePlayerGame seconds = updateGamePlayersStates 
 
 -- 'Function Composition'
-updateGamePlayersStates :: AsteroidsGame -> AsteroidsGame -- sry for doing this but its working :) 
+updateGamePlayersStates :: AsteroidsGame -> AsteroidsGame 
 updateGamePlayersStates game  = game {players = updatePlayers game
                                      ,asteroids = [updateAsteroid asteroid | asteroid <- (asteroids game)] } 
 

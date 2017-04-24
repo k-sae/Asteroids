@@ -2,7 +2,7 @@ module Player where
 import DataTypes
 import Graphics.Gloss.Geometry.Angle
 
-updatePlayers :: AsteroidsGame -> [Player]
+updatePlayers :: AsteroidsGame -> [Player] -- sry for doing this but its working :) 
 updatePlayers game = [(updateProjectiles.updateSpeed.rotateBy.updateLocationBy game) x|x <- (players game)]
 
 rotateBy :: Player -> Player 
