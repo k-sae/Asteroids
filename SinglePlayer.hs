@@ -7,18 +7,16 @@ import Graphics.Gloss.Geometry.Angle
 
 ----------Game Updates
 updateSinglePlayerGame :: Float -> AsteroidsGame -> AsteroidsGame 
-updateSinglePlayerGame seconds = updateLocation . updateGamePlayersStates 
+updateSinglePlayerGame seconds = updateGamePlayersStates 
 
-updateGamePlayersStates :: AsteroidsGame -> AsteroidsGame 
-updateGamePlayersStates game  = game {players = [(updateSpeed.rotateBy) x |x <-(players game)] }
+updateGamePlayersStates :: AsteroidsGame -> AsteroidsGame -- sry for doing this but its working :)
+updateGamePlayersStates game  = game {players = [(updateSpeed.rotateBy.updateLocationBy game) x|x <-(players game)] } 
 
 rotateBy :: Player -> Player 
 rotateBy player |(isrotating player) == True =  player {degree = newdegree}
                 | otherwise = player
  where newdegree = (rotatingBy player) + (degree player)
 
-updateLocation :: AsteroidsGame -> AsteroidsGame
-updateLocation game = game {players = [(updateLocationBy game player )|player <-(players game)] }
 updateLocationBy :: AsteroidsGame -> Player -> Player
 updateLocationBy game player = player {plLocation = newLocation (plLocation player)}
                        where newLocation (x,y) = (verifyXLocation game (x + xvelocity (plSpeed player)),verifyYLocation game (y + yvelocity (plSpeed player)))
