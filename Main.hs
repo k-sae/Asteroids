@@ -30,7 +30,7 @@ initialState = Game
     , gameMode = Menu
     , gWidth = width
     , gHeight = height
-    , asteroids   = []
+    , asteroids = initializeAsteroids
    }
 
 initializePlayers :: [Player]
@@ -46,6 +46,14 @@ initializePlayers = [Player                  -- idk how this worked but it did :
     , firemode = 1
     , plColor = white
     , isThrusting = False
+    }]
+
+initializeAsteroids :: [Asteroid]
+initializeAsteroids = [Asteroid                  -- idk how this worked but it did :D 
+    { size = 10
+    , aLocation = (0,0)
+    , aSpeed = (0,0)
+    , radius = 100
     }]
 
 -- the game foreach loop
@@ -85,7 +93,7 @@ render game
       --translate (-20) (-20) (circle 10),
       --translate (-20) (20) (circle 10),
       --translate (20) (-20) (circle 10)
-      mkAst 80 (0,0)
+      mkAst (radius asteroid) (aLocation asteroid) | asteroid <- (asteroids game)
     ]
     ++
     [
@@ -109,10 +117,6 @@ render game
     mkAst :: Float -> (Float, Float) -> Picture
     mkAst r (x,y) = pictures
      [
-       scale 1 (0.8) (translate x y $ color (greyN 0.6) (circleSolid r)),
-       scale 1 (0.8) (translate (x-(r/3)) (y+(r/3)) $ color (greyN 0.2) (circleSolid (r/5))),
-       scale 1 (0.8) (translate (x+(r/3)) (y+(r/3)) $ color (greyN 0.2) (circleSolid (r/5))),
-       scale 1 (0.8) (translate (x+(r/3)) (y-(r/3)) $ color (greyN 0.2) (circleSolid (r/5))),
-       scale 1 (0.8) (translate (x-(r/3)) (y-(r/3)) $ color (greyN 0.2) (circleSolid (r/5)))
+       scale 1 (0.8) (translate x y $ color (greyN 0.2) (circleSolid r))
      ]
 
