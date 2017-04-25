@@ -2,8 +2,8 @@ module MainMenu where
 import DataTypes
 import Graphics.Gloss
 import Graphics.Gloss.Interface.Pure.Game
-updateMenue :: Float -> AsteroidsGame -> AsteroidsGame 
-updateMenue seconds game = game
+updateMenu :: Float -> AsteroidsGame -> AsteroidsGame 
+updateMenu seconds game = game
 
 
 handleMenuKeys :: Event -> AsteroidsGame -> AsteroidsGame
