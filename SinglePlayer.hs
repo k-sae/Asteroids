@@ -2,39 +2,17 @@ module SinglePlayer where
 import Graphics.Gloss
 import Graphics.Gloss.Interface.Pure.Game
 import DataTypes
-import Graphics.Gloss.Geometry.Angle
-
-
+import Asteroids
+import Player
 ----------Game Updates
 updateSinglePlayerGame :: Float -> AsteroidsGame -> AsteroidsGame 
-updateSinglePlayerGame seconds = updateLocation . updateGamePlayersStates 
+updateSinglePlayerGame seconds = updateGamePlayersStates 
 
+-- 'Function Composition'
 updateGamePlayersStates :: AsteroidsGame -> AsteroidsGame 
-updateGamePlayersStates game  = game {players = [(updateSpeed.rotateBy) x |x <-(players game)] }
+updateGamePlayersStates game  = game {players = updatePlayers game
+                                     ,asteroids = [updateAsteroid asteroid | asteroid <- (asteroids game)] } 
 
-rotateBy :: Player -> Player 
-rotateBy player |(isrotating player) == True =  player {degree = newdegree}
-                | otherwise = player
- where newdegree = (rotatingBy player) + (degree player)
-
-updateLocation :: AsteroidsGame -> AsteroidsGame
-updateLocation game = game {players = [(updateLocationBy game player )|player <-(players game)] }
-updateLocationBy :: AsteroidsGame -> Player -> Player
-updateLocationBy game player = player {plLocation = newLocation (plLocation player)}
-                       where newLocation (x,y) = (verifyXLocation game (x + xvelocity (plSpeed player)),verifyYLocation game (y + yvelocity (plSpeed player)))
-                             xvelocity (x,_) = x
-                             yvelocity (_,y) = y
-verifyXLocation :: AsteroidsGame -> Float -> Float
-verifyXLocation game x 
-                 | abs x >= a/2= -x
-                 | otherwise = x
-                   where a = fromIntegral (gWidth game) :: Float
-
-verifyYLocation :: AsteroidsGame -> Float -> Float
-verifyYLocation game x 
-                 | abs x >= a/2= -x
-                 | otherwise = x
-                   where a = fromIntegral (gHeight game) :: Float
 --------Events Hndling
 handleSingleplayerKeys (EventKey (Char 'd') Down _ _) game = game { players = updateRotationStates (-rotationSpeed) True (players game) 0}    -- Rotate the ship Clock-Wise when press 'd'
 handleSingleplayerKeys (EventKey (Char 'd') Up _ _) game = game { players = updateRotationStates (-rotationSpeed) False (players game) 0}
@@ -47,6 +25,10 @@ handleSingleplayerKeys (EventKey (Char 'w') Down _ _) game = game {players = upd
 handleSingleplayerKeys (EventKey (Char 'w') Up _ _) game = game {players = updateThrustStatus (players game) False 0 0}
 handleSingleplayerKeys (EventResize (w,h)) game = game {gWidth = w , gHeight = h}
 handleSingleplayerKeys _ game = game
+
+--hazem add key event on spacebar to fire 
+-- u may use this reference: https://hackage.haskell.org/package/gloss-1.11.1.1/docs/Graphics-Gloss-Interface-IO-Game.html
+
 
 --The x value will be the rotatingBy value!
 updateRotationStates :: Float -> Bool -> [Player] -> Int -> [Player] 
@@ -63,12 +45,4 @@ updateThrustStatus [] _ _ _ = []
 updateThrustStatus (p:players) state index startIndex 
                                                    | startIndex == index = p { isThrusting = state} : updateThrustStatus players state index startIndex 
                                                    | otherwise = p : updateThrustStatus players state index startIndex 
-
-updateSpeed :: Player -> Player
-updateSpeed player | isThrusting player == True = player{plSpeed = newSpeed (plSpeed player)}
-                   | otherwise = player
-            where newSpeed (x,y) = (check (x + (cos (degToRad ((degree player) - 180))) * accelerateSpeed),check (y + (sin (degToRad ((degree player)-180))) * accelerateSpeed))
-                  check x  | x > thrustMaxSpeed = thrustMaxSpeed
-                           | x < -thrustMaxSpeed = -thrustMaxSpeed
-                           |otherwise  = x
 
