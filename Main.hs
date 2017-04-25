@@ -13,7 +13,7 @@ window :: Display
 window = InWindow "Asteroids" (width, height) (offset, offset)
 
 background :: Color
-background = white
+background = black
 
 fps :: Int
 fps = 60
@@ -44,7 +44,7 @@ initializePlayers = [Player                  -- idk how this worked but it did :
     , isrotating = False
     , isFiring    = False
     , firemode = 1
-    , plColor = black
+    , plColor = white
     , isThrusting = False
     }]
 
@@ -71,26 +71,9 @@ handleKeys event game
 render :: AsteroidsGame  --- update the render like the update function in order to behave like the update function
        -> Picture   --TODO BELBEL splite render function to different files for better organization
 render game 
- | (gameMode game) == Menu = pictures
-   [
-     translate (-400) 280 (text "--------"),
-     translate (-400) 200 (text "| Asteroids. |"),
-     translate (-400) 120 (text "--------"),
-     scale (0.5) (0.5) (translate (-450) 100 (text "(1)SinglePlayer")),
-     scale (0.5) (0.5) (translate (-450) (-100) (text "(2)Cooperative")),
-     scale (0.5) (0.5) (translate (-450) (-300) (text "(3)Versus"))
-   ]
+ | (gameMode game) == Menu = menuRender game
 
- | (gameMode game) == Pause = pictures
-   [
-     translate (-350) 280 (text "-------"),
-     translate (-350) 200 (text "| Paused. |"),
-     translate (-350) 120 (text "-------"),
-     scale (0.4) (0.4) (translate (-800) (100)  (text "(1)Continue as SinglePlayer")),
-     scale (0.4) (0.4) (translate (-800) (-100) (text "(2)Continue as Cooperative")),
-     scale (0.4) (0.4) (translate (-800) (-300) (text "(3)Continue as Versus")),
-     scale (0.4) (0.4) (translate (-800) (-500) (text "(q)Return to MainMenu"))
-   ]
+ | (gameMode game) == Pause = pauseRender game
 
  | otherwise = pictures
    [
@@ -100,13 +83,13 @@ render game
     mkShip :: Bool -> Color -> (Float, Float) -> Float -> Picture
     mkShip False col (x,y) degree = pictures
      [
-       translate x y $ color col $ solidArc (degree-20) (degree+20) 40,
-       translate x y $ color white $ solidArc (degree-10) (degree+10) 35
+       translate x y $ color col $ sectorWire (degree-20) (degree+20) 40
+       --translate x y $ color col $ solidArc (degree-15) (degree+15) 38
      ]
     mkShip True col (x,y) degree = pictures
      [
        translate x y $ color red $ solidArc (degree-5) (degree+5) 45,
        translate x y $ color col $ solidArc (degree-20) (degree+20) 40,
-       translate x y $ color white $ solidArc (degree-10) (degree+10) 35
+       translate x y $ color black $ solidArc (degree-18) (degree+18) 39
      ]
 

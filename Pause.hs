@@ -16,3 +16,15 @@ handlePauseKeys (EventKey (Char '3') _ _ _) game  = game {gameMode = Versus}    
 handlePauseKeys (EventKey (Char 'q') _ _ _) game  = game {gameMode = Menu}         -- Return to the menu and quit the game when press 'q'                                    
 
 handlePauseKeys _ game = game
+
+pauseRender :: AsteroidsGame -> Picture
+pauseRender game = color white (pictures
+ [
+   translate (-350) 280 (text "-------"),
+   translate (-350) 200 (text "| Paused. |"),
+   translate (-350) 120 (text "-------"),
+   scale (0.4) (0.4) (translate (-800) (100)  (text "(1)Continue as SinglePlayer")),
+   scale (0.4) (0.4) (translate (-800) (-100) (text "(2)Continue as Cooperative")),
+   scale (0.4) (0.4) (translate (-800) (-300) (text "(3)Continue as Versus")),
+   scale (0.4) (0.4) (translate (-800) (-500) (text "(q)Return to MainMenu"))
+ ])

@@ -15,3 +15,14 @@ handleMenuKeys (EventKey (Char '2') _ _ _) game  = game {gameMode = Cooperative}
 handleMenuKeys (EventKey (Char '3') _ _ _) game  = game {gameMode = Versus}   -- Enter versus mode when press '3'
                                              
 handleMenuKeys _ game = game
+
+menuRender :: AsteroidsGame -> Picture
+menuRender game = color white (pictures
+ [
+   translate (-400) 280 (text "--------"),
+   translate (-400) 200 (text "| Asteroids. |"),
+   translate (-400) 120 (text "--------"),
+   scale (0.5) (0.5) (translate (-450) 100 (text "(1)SinglePlayer")),
+   scale (0.5) (0.5) (translate (-450) (-100) (text "(2)Cooperative")),
+   scale (0.5) (0.5) (translate (-450) (-300) (text "(3)Versus"))
+ ])
