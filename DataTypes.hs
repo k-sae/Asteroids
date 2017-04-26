@@ -44,8 +44,8 @@ data Asteroid = Asteroid
 data AsteroidsGame = Game 
      { players :: [Player]
      , gameMode :: GameMode
-     , gWidth :: Int
-     , gHeight :: Int
+     , gWidth :: Float
+     , gHeight :: Float
      , asteroids   :: [Asteroid]
      }
 
