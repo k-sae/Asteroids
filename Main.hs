@@ -26,27 +26,30 @@ main = play window background fps initialState render handleKeys update
 
 --initialize the states of the game
 initialState :: AsteroidsGame
-initialState = Game
-   { players = initializePlayers
-    , gameMode = Menu
-    , gWidth = (fromIntegral width)
-    , gHeight = (fromIntegral height)
-    , asteroids   = []
+initialState    = Game
+   { players    = initializePlayers
+    , gameMode  = Menu
+    , gWidth    = (fromIntegral width)
+    , gHeight   = (fromIntegral height)
+    , asteroids = []
    }
 
 initializePlayers :: [Player]
 initializePlayers = [Player                  -- idk how this worked but it did :D 
     { projectiles = []
-    , degree = 0
-    , plSpeed = (0,0)
-    , plLocation = (0,0)
-    , rotatingBy = rotationSpeed
-    , firingSpeed  = 10
-    , isrotating = False
+    , degree      = 0
+    , plSpeed     = (0,0)
+    , plLocation  = (0,0)
+    , rotatingBy  = rotationSpeed
+    , firingSpeed = 10
+    , isrotating  = False
     , isFiring    = False
-    , firemode = 1
-    , plColor = (makeColorI 51 122 183 255)
+    , firemode    = 1
+    , plColor     = (makeColorI 51 122 183 255)
     , isThrusting = False
+    , score       = 0
+    , highScore   = 0
+    , lives       = 3
     }]
 
 -- the game foreach loop
@@ -76,42 +79,4 @@ render game
 
  | (gameMode game) == Pause = pauseRender game
 
- | otherwise = pictures
-   ([
-      --assume this value is the number of stars
-      mkStars 111
-   ]
-   ++
-   [
-    mkShip (isThrusting player) (plColor player) (plLocation player) $ (degree player) | player <- (players game) -- Belal Check This  <-- :)
-   ])
-   where
-    mkShip :: Bool -> Color -> (Float, Float) -> Float -> Picture
-    mkShip False col (x,y) degree = pictures
-     [
-       translate x y $ color white $ solidArc (degree-20) (degree+20) 40,
-       translate x y $ color col $ solidArc (degree-15) (degree+15) 37
-     ]
-    mkShip True col (x,y) degree = pictures
-     [
-       translate x y $ color red $ solidArc (degree-5) (degree+5) 47,
-       translate x y $ color white $ solidArc (degree-20) (degree+20) 40,
-       translate x y $ color col $ solidArc (degree-15) (degree+15) 37
-     ]
-
-    mkStars :: Int -> Picture
-    mkStars n = pictures
-     [
-       translate (fst l) (snd l) $ color blue (circleSolid 2) | l <- getVal (randX n) (randY n)
-     ]
-
-    randX :: Int -> [Float]
-    randX n = take n (randomRs ((-(gWidth game)), (gWidth game) :: Float) (mkStdGen n))
-    randY :: Int -> [Float]
-    randY n = take n (randomRs ((-(gHeight game)), (gHeight game) :: Float) (mkStdGen (n*2)))
-
-    getVal :: [Float] -> [Float] -> [(Float,Float)] 
-    getVal [] [] = []
-    getVal [] _ = []
-    getVal _ [] = []
-    getVal (x:xs) (y:ys) = (x,y) : (getVal xs ys)
+ | otherwise = spRender game
