@@ -23,7 +23,7 @@ handleSingleplayerKeys (EventKey (Char 'p') Down _ _) game = game {gameMode = Pa
 handleSingleplayerKeys (EventKey (Char 'q') Down _ _) game = game {gameMode = Menu}   -- Return to the menu and quit the game when press 'q'
 handleSingleplayerKeys (EventKey (Char 'w') Down _ _) game = game {players = updateThrustStatus (players game) True 0 0}
 handleSingleplayerKeys (EventKey (Char 'w') Up _ _) game = game {players = updateThrustStatus (players game) False 0 0}
-handleSingleplayerKeys (EventResize (w,h)) game = game {gWidth = w , gHeight = h}
+handleSingleplayerKeys (EventResize (w,h)) game = game {gWidth = (fromIntegral w) , gHeight = (fromIntegral h)}
 handleSingleplayerKeys _ game = game
 
 --hazem add key event on spacebar to fire 
