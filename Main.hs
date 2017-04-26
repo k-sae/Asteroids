@@ -89,12 +89,12 @@ render game
     mkShip :: Bool -> Color -> (Float, Float) -> Float -> Picture
     mkShip False col (x,y) degree = pictures
      [
-       translate x y $ color (makeColorI 46 109 164 255) $ solidArc (degree-20) (degree+20) 40,
+       translate x y $ color white $ solidArc (degree-20) (degree+20) 40,
        translate x y $ color col $ solidArc (degree-15) (degree+15) 37
      ]
     mkShip True col (x,y) degree = pictures
      [
-       translate x y $ color red $ solidArc (degree-5) (degree+5) 45,
+       translate x y $ color red $ solidArc (degree-5) (degree+5) 47,
        translate x y $ color white $ solidArc (degree-20) (degree+20) 40,
        translate x y $ color col $ solidArc (degree-15) (degree+15) 37
      ]
