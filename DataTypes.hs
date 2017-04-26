@@ -24,6 +24,9 @@ data Player = Player
     , firemode :: Int                  -- fire mode may be removed later 
     , plColor :: Color
     , isThrusting :: Bool
+    , score :: Float
+    , highScore :: Float
+    , lives :: Float
     }
 
 

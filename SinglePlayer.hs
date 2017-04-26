@@ -2,8 +2,10 @@ module SinglePlayer where
 import Graphics.Gloss
 import Graphics.Gloss.Interface.Pure.Game
 import DataTypes
+import Shapes
 import Asteroids
 import Player
+import System.Random
 ----------Game Updates
 updateSinglePlayerGame :: Float -> AsteroidsGame -> AsteroidsGame 
 updateSinglePlayerGame seconds = updateGamePlayersStates 
@@ -46,3 +48,77 @@ updateThrustStatus (p:players) state index startIndex
                                                    | startIndex == index = p { isThrusting = state} : updateThrustStatus players state index startIndex 
                                                    | otherwise = p : updateThrustStatus players state index startIndex 
 
+spRender :: AsteroidsGame -> Picture
+spRender game = pictures
+   ([
+      --assume this value is the number of stars
+      mkStars 111
+   ]
+   ++
+   [
+      mkTitles (highScore player) (score player) (lives player) (plColor player) | player <- (players game)
+   ]
+   ++
+   [
+      --polygon [(0,0),(0,40),(20,80),(80,80),(100,0),(0,0)],
+      --color white (polygon [(2,2),(2,38),(22,78),(78,78),(98,2),(2,2)])
+      --circleSolid 80,
+      --translate 20 20 (circle 10),
+      --translate (-20) (-20) (circle 10),
+      --translate (-20) (20) (circle 10),
+      --translate (20) (-20) (circle 10)
+      mkAst (radius asteroid) (aLocation asteroid) | asteroid <- (asteroids game)
+   ]
+   ++
+   [
+      mkShip (isThrusting player) (plColor player) (plLocation player) $ (degree player) | player <- (players game) -- Belal Check This  <-- :)
+   ])
+   
+   where
+    mkShip :: Bool -> Color -> (Float, Float) -> Float -> Picture
+    mkShip False col (x,y) degree = pictures
+     [
+       translate x y $ color white $ solidArc (degree-20) (degree+20) 40,
+       translate x y $ color col $ solidArc (degree-15) (degree+15) 37
+     ]
+    mkShip True col (x,y) degree = pictures
+     [
+       translate x y $ color red $ solidArc (degree-5) (degree+5) 47,
+       translate x y $ color white $ solidArc (degree-20) (degree+20) 40,
+       translate x y $ color col $ solidArc (degree-15) (degree+15) 37
+     ]
+
+    mkAst :: Float -> (Float, Float) -> Picture
+    mkAst r (x,y) = pictures
+     [
+       scale 1 (0.8) (translate x y $ color (greyN 0.2) (circleSolid r))
+     ]
+
+    mkStars :: Int -> Picture
+    mkStars n = pictures
+     [
+       translate (fst l) (snd l) $ color blue (circleSolid 2) | l <- getVal (randX n) (randY n)
+     ]
+
+    randX :: Int -> [Float]
+    randX n = take n (randomRs ((-(gWidth game)), (gWidth game) :: Float) (mkStdGen n))
+    randY :: Int -> [Float]
+    randY n = take n (randomRs ((-(gHeight game)), (gHeight game) :: Float) (mkStdGen (n*2)))
+
+    getVal :: [Float] -> [Float] -> [(Float,Float)] 
+    getVal [] [] = []
+    getVal [] _ = []
+    getVal _ [] = []
+    getVal (x:xs) (y:ys) = (x,y) : (getVal xs ys)
+
+    mkTitles :: Float -> Float -> Float -> Color -> Picture
+    mkTitles hs s l col = pictures
+     [
+      scale (0.2) (0.2) (translate (-(gWidth game*2.3)) (gHeight game*2.2) $ color white (text ("High Score: " ++ show (hs)))),
+      scale (0.2) (0.2) (translate (-(gWidth game*2.3)) (gHeight game*2) $ color white (text ("Score: " ++ show (s)))),
+      scale (0.2) (0.2) (translate (-(gWidth game*2.3)) (-(gHeight game*2.2)) $ color white (text "Lives: " )),
+      showLives l col
+     ]
+
+    showLives :: Float -> Color -> Picture
+    showLives n col = pictures [scale (0.8) (0.8) (mkShip False col ((-gWidth game)*(0.57) + 70 + x*40,(-gHeight game)*(0.55) + 32) 270) | x <- [1..n] ]
