@@ -60,14 +60,7 @@ spRender game = pictures
    ]
    ++
    [
-      --polygon [(0,0),(0,40),(20,80),(80,80),(100,0),(0,0)],
-      --color white (polygon [(2,2),(2,38),(22,78),(78,78),(98,2),(2,2)])
-      --circleSolid 80,
-      --translate 20 20 (circle 10),
-      --translate (-20) (-20) (circle 10),
-      --translate (-20) (20) (circle 10),
-      --translate (20) (-20) (circle 10)
-      mkAst (radius asteroid) (aLocation asteroid) | asteroid <- (asteroids game)
+      renderAsteroid game
    ]
    ++
    [
@@ -86,12 +79,6 @@ spRender game = pictures
        translate x y $ color red $ solidArc (degree-5) (degree+5) 47,
        translate x y $ color white $ solidArc (degree-20) (degree+20) 40,
        translate x y $ color col $ solidArc (degree-15) (degree+15) 37
-     ]
-
-    mkAst :: Float -> (Float, Float) -> Picture
-    mkAst r (x,y) = pictures
-     [
-       scale 1 (0.8) (translate x y $ color (greyN 0.2) (circleSolid r))
      ]
 
     mkStars :: Int -> Picture
