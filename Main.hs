@@ -45,7 +45,7 @@ initializePlayers = [Player                  -- idk how this worked but it did :
     , isrotating = False
     , isFiring    = False
     , firemode = 1
-    , plColor = white
+    , plColor = (dark blue)
     , isThrusting = False
     }]
 
@@ -89,20 +89,20 @@ render game
     mkShip :: Bool -> Color -> (Float, Float) -> Float -> Picture
     mkShip False col (x,y) degree = pictures
      [
-       translate x y $ color col $ sectorWire (degree-20) (degree+20) 40
-       --translate x y $ color col $ solidArc (degree-15) (degree+15) 38
+       translate x y $ color white $ solidArc (degree-20) (degree+20) 40,
+       translate x y $ color col $ solidArc (degree-15) (degree+15) 37
      ]
     mkShip True col (x,y) degree = pictures
      [
        translate x y $ color red $ solidArc (degree-5) (degree+5) 45,
-       translate x y $ color col $ solidArc (degree-20) (degree+20) 40,
-       translate x y $ color black $ solidArc (degree-18) (degree+18) 39
+       translate x y $ color white $ solidArc (degree-20) (degree+20) 40,
+       translate x y $ color col $ solidArc (degree-15) (degree+15) 37
      ]
 
     mkStars :: Int -> Picture
     mkStars n = pictures
      [
-       translate (fst l) (snd l) $ color white (circleSolid 2) | l <- getVal (randX n) (randY n)
+       translate (fst l) (snd l) $ color blue (circleSolid 2) | l <- getVal (randX n) (randY n)
      ]
 
     randX :: Int -> [Float]
