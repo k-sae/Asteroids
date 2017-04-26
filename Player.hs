@@ -19,13 +19,13 @@ verifyXLocation :: AsteroidsGame -> Float -> Float
 verifyXLocation game x 
                  | abs x >= a/2= -x
                  | otherwise = x
-                   where a = fromIntegral (gWidth game) :: Float
+                   where a = (gWidth game)
 
 verifyYLocation :: AsteroidsGame -> Float -> Float
 verifyYLocation game x 
                  | abs x >= a/2= -x
                  | otherwise = x
-                   where a = fromIntegral (gHeight game) :: Float
+                   where a = (gHeight game)
 
 
 

@@ -7,6 +7,7 @@ import MainMenu
 import Pause
 import SinglePlayer
 import Asteroids
+import System.Random
 --functions in this file is responsible for finding the appropriate function according to mode
 -- see 'update' function as example 
 window :: Display
@@ -28,8 +29,8 @@ initialState :: AsteroidsGame
 initialState = Game
    { players = initializePlayers
     , gameMode = Menu
-    , gWidth = width
-    , gHeight = height
+    , gWidth = (fromIntegral width)
+    , gHeight = (fromIntegral height)
     , asteroids   = []
    }
 
@@ -76,9 +77,14 @@ render game
  | (gameMode game) == Pause = pauseRender game
 
  | otherwise = pictures
+   ([
+      --assume this value is the number of stars
+      mkStars 111
+   ]
+   ++
    [
     mkShip (isThrusting player) (plColor player) (plLocation player) $ (degree player) | player <- (players game) -- Belal Check This  <-- :)
-   ]
+   ])
    where
     mkShip :: Bool -> Color -> (Float, Float) -> Float -> Picture
     mkShip False col (x,y) degree = pictures
@@ -93,3 +99,19 @@ render game
        translate x y $ color black $ solidArc (degree-18) (degree+18) 39
      ]
 
+    mkStars :: Int -> Picture
+    mkStars n = pictures
+     [
+       translate (fst l) (snd l) $ color white (circleSolid 2) | l <- getVal (randX n) (randY n)
+     ]
+
+    randX :: Int -> [Float]
+    randX n = take n (randomRs ((-(gWidth game)), (gWidth game) :: Float) (mkStdGen n))
+    randY :: Int -> [Float]
+    randY n = take n (randomRs ((-(gHeight game)), (gHeight game) :: Float) (mkStdGen (n*2)))
+
+    getVal :: [Float] -> [Float] -> [(Float,Float)] 
+    getVal [] [] = []
+    getVal [] _ = []
+    getVal _ [] = []
+    getVal (x:xs) (y:ys) = (x,y) : (getVal xs ys)
