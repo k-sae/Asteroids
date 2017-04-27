@@ -12,7 +12,7 @@ import System.IO.Unsafe
 
 updateAsteroid :: Asteroid -> AsteroidsGame-> Asteroid --khaled edit this to fit the req
 updateAsteroid asteroid  game = asteroid { aLocation = newLocation (aLocation asteroid)}
-                                 where newLocation (x,y) = (verifyXLocation game (x +randX),verifyYLocation game (y +randY))
+                                 where newLocation (x,y) = (verifyXLocation game (x +randX 3),verifyYLocation game (y +randY 3))
                                     
 verifyXLocation :: AsteroidsGame -> Float -> Float
 verifyXLocation game x 
@@ -25,11 +25,11 @@ verifyYLocation game x
                  | abs x >= a/2= -x
                  | otherwise = x
                    where a = (gHeight game)
-randX :: Float
-randX  = unsafePerformIO (getStdRandom (randomR (-2, 2)))
+randX :: Float->Float
+randX x = unsafePerformIO (getStdRandom (randomR (-x, x)))
 
-randY :: Float
-randY = unsafePerformIO (getStdRandom (randomR (-2, 2)))
+randY :: Float ->Float
+randY y = unsafePerformIO (getStdRandom (randomR (-y, y)))
 
 
 renderAsteroid :: AsteroidsGame -> Picture

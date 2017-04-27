@@ -8,7 +8,7 @@ height = 700
 offset = 100
       -- the thrust will speed up till reach max value
 awidth ,aheight :: Float 
-awidth =  fromIntegral (width `div` 2)
+awidth =  fromIntegral ((width `div` 2)-10)
 aheight = fromIntegral (height `div` 2)
 rotationSpeed, accelerateSpeed, thrustMaxSpeed :: Float
 rotationSpeed = 4
