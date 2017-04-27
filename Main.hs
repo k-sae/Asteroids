@@ -55,9 +55,9 @@ initializePlayers = [Player                  -- idk how this worked but it did :
 initializeAsteroids :: [Asteroid]
 initializeAsteroids = [Asteroid                  -- idk how this worked but it did :D 
     { size = 10
-    , aLocation = (0,0)
+    , aLocation = ( awidth, aheight )
     , aSpeed = (0,0)
-    , radius = 100
+    , radius = 80
     }]
 
 -- the game foreach loop
