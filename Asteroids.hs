@@ -4,6 +4,7 @@ import Graphics.Gloss
 import DataTypes
 import System.Random
 import System.IO.Unsafe
+
 -- asteroids in seperate file bec many modes will depend on 
 -- and it will have constant behavior and may be not its up to khaled to decide
 -- import this file whenever u want to call one of its functions
@@ -12,7 +13,7 @@ import System.IO.Unsafe
 
 updateAsteroid :: Asteroid -> AsteroidsGame-> Asteroid --khaled edit this to fit the req
 updateAsteroid asteroid  game = asteroid { aLocation = newLocation (aLocation asteroid)}
-                                 where newLocation (x,y) = (verifyXLocation game (x +randX 3),verifyYLocation game (y +randY 3))
+                                 where newLocation (x,y) = (verifyXLocation game (x + (fst (aSpeed asteroid))),verifyYLocation game (y +(snd (aSpeed asteroid))))
                                     
 verifyXLocation :: AsteroidsGame -> Float -> Float
 verifyXLocation game x 
@@ -43,3 +44,14 @@ renderAsteroid game = pictures
      [
        scale 1 (0.8) (translate x y $ color (greyN 0.2) (circleSolid r))
      ]
+
+
+
+initializeAsteroids  :: Float-> [Asteroid]
+initializeAsteroids 0 = []
+initializeAsteroids count =   Asteroid                  -- idk how this worked but it did :D 
+    { size = 10
+    , aLocation = ( randX (awidth-count), randY (aheight - count ) )-- rand
+    , aSpeed = (randX count, randY count)  -- rand
+    , radius = 80
+    }  : initializeAsteroids (count - 1) 

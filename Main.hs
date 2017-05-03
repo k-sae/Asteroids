@@ -31,7 +31,7 @@ initialState    = Game
     , gameMode  = Menu
     , gWidth    = (fromIntegral width)
     , gHeight   = (fromIntegral height)
-    , asteroids = initializeAsteroids
+    , asteroids = initializeAsteroids 3
    }
 
 initializePlayers :: [Player]
@@ -50,14 +50,6 @@ initializePlayers = [Player                  -- idk how this worked but it did :
     , score       = 0
     , highScore   = 0
     , lives       = 3
-    }]
-
-initializeAsteroids :: [Asteroid]
-initializeAsteroids = [Asteroid                  -- idk how this worked but it did :D 
-    { size = 10
-    , aLocation = ( awidth, aheight )
-    , aSpeed = (0,0)
-    , radius = 80
     }]
 
 -- the game foreach loop
