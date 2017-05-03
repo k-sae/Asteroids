@@ -70,7 +70,7 @@ spRender game = pictures
    ]
    ++
    [
-      mkFire (isFiring player) (projectiles player) | player <- (players game)
+      mkFire (projectiles player) | player <- (players game)
    ])
    
    where
@@ -92,15 +92,9 @@ spRender game = pictures
      [
        translate (fst l) (snd l) $ color blue (circleSolid 2) | l <- getVal (randX n) (randY n)
      ]
---NORMAL FIRE
-    mkFire :: Bool -> [Projectile] -> Picture
-    mkFire True (x:xs) = pictures [translate (fst (prLocation x)) (snd (prLocation x)) (color red (circleSolid 5)) ]
-    mkFire False _ = blank
 
---LAZER FIRE :P
---    mkFire :: Bool -> [Projectile] -> Picture
---    mkFire True projectiles = pictures [translate (fst (prLocation projectile)) (snd (prLocation projectile)) (color red (circleSolid 5)) | projectile <- projectiles]
---    mkFire False _ = blank
+    mkFire :: [Projectile] -> Picture
+    mkFire projectiles = pictures [translate (fst (prLocation projectile)) (snd (prLocation projectile)) (color red (circleSolid 5)) | projectile <- projectiles]
 
     randX :: Int -> [Float]
     randX n = take n (randomRs ((-(gWidth game)), (gWidth game) :: Float) (mkStdGen n))
