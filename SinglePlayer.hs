@@ -67,6 +67,10 @@ spRender game = pictures
    ++
    [
       mkShip (isThrusting player) (plColor player) (plLocation player) $ (degree player) | player <- (players game) -- Belal Check This  <-- :)
+   ]
+   ++
+   [
+      mkFire (isFiring player) (projectiles player) | player <- (players game)
    ])
    
    where
@@ -88,6 +92,15 @@ spRender game = pictures
      [
        translate (fst l) (snd l) $ color blue (circleSolid 2) | l <- getVal (randX n) (randY n)
      ]
+--NORMAL FIRE
+    mkFire :: Bool -> [Projectile] -> Picture
+    mkFire True (x:xs) = pictures [translate (fst (prLocation x)) (snd (prLocation x)) (color red (circleSolid 5)) ]
+    mkFire False _ = blank
+
+--LAZER FIRE :P
+--    mkFire :: Bool -> [Projectile] -> Picture
+--    mkFire True projectiles = pictures [translate (fst (prLocation projectile)) (snd (prLocation projectile)) (color red (circleSolid 5)) | projectile <- projectiles]
+--    mkFire False _ = blank
 
     randX :: Int -> [Float]
     randX n = take n (randomRs ((-(gWidth game)), (gWidth game) :: Float) (mkStdGen n))
