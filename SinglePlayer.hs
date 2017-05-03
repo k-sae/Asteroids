@@ -26,6 +26,9 @@ handleSingleplayerKeys (EventKey (Char 'q') Down _ _) game = game {gameMode = Me
 handleSingleplayerKeys (EventKey (Char 'w') Down _ _) game = game {players = updateThrustStatus (players game) True 0 0}
 handleSingleplayerKeys (EventKey (Char 'w') Up _ _) game = game {players = updateThrustStatus (players game) False 0 0}
 handleSingleplayerKeys (EventResize (w,h)) game = game {gWidth = (fromIntegral w) , gHeight = (fromIntegral h)}
+handleSingleplayerKeys (EventKey (SpecialKey KeySpace) Down _ _) game = game {players = updateFireStatus (players game) True}
+handleSingleplayerKeys (EventKey (SpecialKey KeySpace) Up _ _) game = game {players = updateFireStatus (players game) False}
+
 handleSingleplayerKeys _ game = game
 
 --hazem add key event on spacebar to fire 
@@ -48,6 +51,9 @@ updateThrustStatus (p:players) state index startIndex
                                                    | startIndex == index = p { isThrusting = state} : updateThrustStatus players state index startIndex 
                                                    | otherwise = p : updateThrustStatus players state index startIndex 
 
+updateFireStatus :: [Player] -> Bool -> [Player]
+updateFireStatus players status = [player{isFiring = status} | player <- players]
+
 spRender :: AsteroidsGame -> Picture
 spRender game = pictures
    ([
@@ -65,6 +71,10 @@ spRender game = pictures
    ++
    [
       mkShip (isThrusting player) (plColor player) (plLocation player) $ (degree player) | player <- (players game) -- Belal Check This  <-- :)
+   ]
+   ++
+   [
+      mkFire (projectiles player) | player <- (players game)
    ])
    
    where
@@ -86,6 +96,9 @@ spRender game = pictures
      [
        translate (fst l) (snd l) $ color blue (circleSolid 2) | l <- getVal (randX n) (randY n)
      ]
+
+    mkFire :: [Projectile] -> Picture
+    mkFire projectiles = pictures [translate (fst (prLocation projectile)) (snd (prLocation projectile)) (color red (circleSolid 5)) | projectile <- projectiles]
 
     randX :: Int -> [Float]
     randX n = take n (randomRs ((-(gWidth game)), (gWidth game) :: Float) (mkStdGen n))
