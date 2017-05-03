@@ -26,6 +26,9 @@ handleSingleplayerKeys (EventKey (Char 'q') Down _ _) game = game {gameMode = Me
 handleSingleplayerKeys (EventKey (Char 'w') Down _ _) game = game {players = updateThrustStatus (players game) True 0 0}
 handleSingleplayerKeys (EventKey (Char 'w') Up _ _) game = game {players = updateThrustStatus (players game) False 0 0}
 handleSingleplayerKeys (EventResize (w,h)) game = game {gWidth = (fromIntegral w) , gHeight = (fromIntegral h)}
+handleSingleplayerKeys (EventKey (SpecialKey KeySpace) Down _ _) game = game {players = updateFireStatus (players game) True}
+handleSingleplayerKeys (EventKey (SpecialKey KeySpace) Up _ _) game = game {players = updateFireStatus (players game) False}
+
 handleSingleplayerKeys _ game = game
 
 --hazem add key event on spacebar to fire 
@@ -47,6 +50,9 @@ updateThrustStatus [] _ _ _ = []
 updateThrustStatus (p:players) state index startIndex 
                                                    | startIndex == index = p { isThrusting = state} : updateThrustStatus players state index startIndex 
                                                    | otherwise = p : updateThrustStatus players state index startIndex 
+
+updateFireStatus :: [Player] -> Bool -> [Player]
+updateFireStatus players status = [player{isFiring = status} | player <- players]
 
 spRender :: AsteroidsGame -> Picture
 spRender game = pictures

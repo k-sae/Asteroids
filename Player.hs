@@ -39,10 +39,23 @@ updateSpeed player | isThrusting player == True = player{plSpeed = newSpeed (plS
 
 -- u may not need to touch this 
 updateProjectiles :: Player -> Player
-updateProjectiles player = player { projectiles = [updateProjectile projectile| projectile <- (projectiles player)]}
+updateProjectiles player = player { projectiles = updateProjectilesCount [updateProjectile projectile player| projectile <- (projectiles player)] player}
 
+updateProjectilesCount :: [Projectile] -> Player -> [Projectile]
+updateProjectilesCount projectiles player = initializeProjectile player : projectiles
 
+initializeProjectile :: Player -> Projectile
+initializeProjectile player = Projectile
+                              {
+                                 prLocation = (plLocation player)
+                                ,prSpeed = (cos (degToRad (degree player)),sin (degToRad (degree player)))
+                                ,prLifeTime = 600
+                              }
 
 --update projectile Hazem will have Fun here 
-updateProjectile :: Projectile -> Projectile
-updateProjectile projectile = projectile
+updateProjectile :: Projectile -> Player -> Projectile
+updateProjectile projectile player = projectile
+
+--TODO
+--    1- initialize upon key event
+--    2-
