@@ -42,7 +42,9 @@ updateProjectiles :: Player -> Player
 updateProjectiles player = player { projectiles = updateProjectilesCount [updateProjectile projectile player| projectile <- (projectiles player)] player}
 
 updateProjectilesCount :: [Projectile] -> Player -> [Projectile]
-updateProjectilesCount projectiles player = initializeProjectile player : projectiles
+updateProjectilesCount projectiles player 
+                                         | (isFiring player) == False = projectiles
+                                         | otherwise = initializeProjectile player : projectiles
 
 initializeProjectile :: Player -> Projectile
 initializeProjectile player = Projectile
