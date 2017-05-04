@@ -50,13 +50,13 @@ initializeProjectile :: Player -> Projectile
 initializeProjectile player = Projectile
                               {
                                  prLocation = (plLocation player)
-                                ,prSpeed = (cos (degToRad (degree player)-180),sin (degToRad (degree player)-180))
+                                ,prSpeed = (cos (degToRad ((degree player) - 180)),(sin (degToRad ((degree player) - 180))))
                                 ,prLifeTime = 4000
                               }
 
 --update projectile Hazem will have Fun here 
 updateProjectile :: Projectile -> Player -> Projectile
-updateProjectile projectile player = projectile { prLocation = (fst (prLocation projectile) + (cos (degToRad ((degree player) - 180)))  , snd (prLocation projectile) +(sin (degToRad ((degree player) - 180))))
+updateProjectile projectile player = projectile { prLocation = (fst (prLocation projectile) + (fst (prSpeed projectile))  , snd (prLocation projectile) + (snd (prSpeed projectile)))
                                                   ,prLifeTime = prLifeTime projectile - 10 
                                                 }
 --TODO
