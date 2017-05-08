@@ -39,10 +39,26 @@ updateSpeed player | isThrusting player == True = player{plSpeed = newSpeed (plS
 
 -- u may not need to touch this 
 updateProjectiles :: Player -> Player
-updateProjectiles player = player { projectiles = [updateProjectile projectile| projectile <- (projectiles player)]}
+updateProjectiles player = player { projectiles = updateProjectilesCount [updateProjectile projectile player| projectile <- (projectiles player), (prLifeTime projectile) > 0] player}
 
+updateProjectilesCount :: [Projectile] -> Player -> [Projectile]
+updateProjectilesCount projectiles player 
+                                         | (isFiring player) == False = projectiles
+                                         | otherwise = initializeProjectile player : projectiles
 
+initializeProjectile :: Player -> Projectile
+initializeProjectile player = Projectile
+                              {
+                                 prLocation = (plLocation player)
+                                ,prSpeed = (cos (degToRad ((degree player) - 180)),(sin (degToRad ((degree player) - 180))))
+                                ,prLifeTime = 4000
+                              }
 
 --update projectile Hazem will have Fun here 
-updateProjectile :: Projectile -> Projectile
-updateProjectile projectile = projectile
+updateProjectile :: Projectile -> Player -> Projectile
+updateProjectile projectile player = projectile { prLocation = (fst (prLocation projectile) + (fst (prSpeed projectile))  , snd (prLocation projectile) + (snd (prSpeed projectile)))
+                                                  ,prLifeTime = prLifeTime projectile - 10 
+                                                }
+--TODO
+--    1- initialize upon key event
+--    2-
