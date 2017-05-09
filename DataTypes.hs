@@ -44,7 +44,7 @@ data Asteroid = Asteroid
      , aLocation :: (Float, Float) -- location W.R.T (x and y axes)
      , aSpeed  :: (Float, Float)  -- speed W.R.T (x and y axes)
      , radius :: Float        -- decide on whatever the team see right (circle or quadrilateral)
-     }
+     } deriving Eq
 
 data AsteroidsGame = Game 
      { players :: [Player]

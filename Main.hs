@@ -56,7 +56,7 @@ initializePlayers = [Player                  -- idk how this worked but it did :
 update :: Float -> AsteroidsGame -> AsteroidsGame                        -- update the game according to the Game Mode
 update seconds game | (gameMode game) == Menu = updateMenu seconds initialState  -- call the update menue from MainMenu.hs file
                     | (gameMode game) == Pause = updatePause seconds game
-                    | otherwise = SinglePlayer.updateSinglePlayerGame seconds game
+                    | otherwise = SinglePlayer.updateSinglePlayerGame  game
 
 -- handle game events like thrust button etc
 

@@ -6,10 +6,21 @@ import Shapes
 import Asteroids
 import Player
 import System.Random
+import Debug.Trace
 ----------Game Updates
-updateSinglePlayerGame :: Float -> AsteroidsGame -> AsteroidsGame 
-updateSinglePlayerGame seconds = updateGamePlayersStates 
+updateSinglePlayerGame :: AsteroidsGame -> AsteroidsGame 
+updateSinglePlayerGame  = updateCollisions . updateGamePlayersStates 
 
+--collisions
+updateCollisions :: AsteroidsGame -> AsteroidsGame 
+updateCollisions game =  game { players = [updatePlayerAsteroidCollision game player (asteroids game) |player <- (players game)]}
+
+
+updatePlayerAsteroidCollision :: AsteroidsGame -> Player -> [Asteroid] -> Player
+updatePlayerAsteroidCollision game player asteroids | length asteroids == length newAsteroids = player
+                                               | otherwise = player {lives = (lives player) - 1, plLocation = (0,0), plSpeed = (0,0) }
+                                  where distance ast = sqrt (( fst (plLocation player) - fst (aLocation ast))^2 + ( snd (plLocation player) - snd (aLocation ast))^2)
+                                        newAsteroids = [ asteroid | asteroid <- asteroids, distance asteroid > (radius asteroid)]
 -- 'Function Composition'
 updateGamePlayersStates :: AsteroidsGame -> AsteroidsGame 
 updateGamePlayersStates game  = game {players = updatePlayers game
