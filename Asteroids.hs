@@ -42,7 +42,10 @@ renderAsteroid game = pictures
     mkAst :: Float -> (Float, Float) -> Picture
     mkAst r (x,y) = pictures
      [
-       scale 1 (0.8) (translate x y $ color (greyN 0.2) (circleSolid r))
+       scale 1 (0.8) (translate x y $ color (greyN 0.95) (circle r))
+       --scale 1 (0.8) (translate (x-r/3) (y) $ color (greyN 0.3) (circleSolid (r/3))),
+       --scale 1 (0.8) (translate (x) (y-r/2) $ color (greyN 0.3) (circleSolid (r/3)))
+       --translate x y $ color (greyN 0.8) (polygon [((-70),(-70)),((-80),30),((-40),80),(10,50),(50,60),(80,(-10)),(50,30),(80,(-70)),((-70),(-70))])
      ]
 
 

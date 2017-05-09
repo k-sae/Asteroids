@@ -12,8 +12,24 @@ updateSinglePlayerGame seconds = updateGamePlayersStates
 
 -- 'Function Composition'
 updateGamePlayersStates :: AsteroidsGame -> AsteroidsGame 
-updateGamePlayersStates game  = game {players = updatePlayers game
-                                     ,asteroids = [updateAsteroid asteroid game| asteroid <- (asteroids game)] } 
+updateGamePlayersStates game  = aBounce (game {players = updatePlayers game
+                                     ,asteroids = [updateAsteroid asteroid game| asteroid <- (asteroids game)] })
+
+help :: Player -> [Projectile]
+help player = (projectiles player)
+
+isCollide :: (Float, Float) -> Float-> (Float, Float) -> Bool
+isCollide (ax,ay) r (px,py)
+ | (ax==px) = True
+ | otherwise = False
+
+aCollision :: [Asteroid] -> [Projectile] -> [(Asteroid,Projectile)]
+aCollision asteroids projectiles = [(asteroid,projectile) | asteroid <- asteroids, projectile <- projectiles, isCollide (aLocation asteroid) (radius asteroid) (prLocation projectile)]
+ 
+aBounce :: AsteroidsGame -> AsteroidsGame
+aBounce game = game {asteroids = newAst}
+ where
+  newAst = if(length(aCollision (asteroids game) (help (head (players game))))/=0) then [] else (asteroids game)
 
 --------Events Hndling
 handleSingleplayerKeys (EventKey (Char 'd') Down _ _) game = game { players = updateRotationStates (-rotationSpeed) True (players game) 0}    -- Rotate the ship Clock-Wise when press 'd'
