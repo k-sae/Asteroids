@@ -37,14 +37,18 @@ updateSpeed player | isThrusting player == True = player{plSpeed = newSpeed (plS
                            | x < -thrustMaxSpeed = -thrustMaxSpeed
                            |otherwise  = x
 
+
+
 -- u may not need to touch this 
 updateProjectiles :: Player -> Player
-updateProjectiles player = player { projectiles = updateProjectilesCount [updateProjectile projectile player| projectile <- (projectiles player), (prLifeTime projectile) > 0] player}
+updateProjectiles player = player { projectiles = updateProjectilesCount [updateProjectile projectile player| projectile <- (projectiles player),(prLifeTime projectile) > 0] player,
+                                   firingSpeed = (firingSpeed player) + 1}
 
 updateProjectilesCount :: [Projectile] -> Player -> [Projectile]
 updateProjectilesCount projectiles player 
                                          | (isFiring player) == False = projectiles
-                                         | otherwise = initializeProjectile player : projectiles
+                                         | (firingSpeed player) `mod` 5==0 = initializeProjectile player : projectiles
+                                         | otherwise = projectiles
 
 initializeProjectile :: Player -> Projectile
 initializeProjectile player = Projectile
