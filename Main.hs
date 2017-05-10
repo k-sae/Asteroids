@@ -31,7 +31,7 @@ initialState    = Game
     , gameMode  = Menu
     , gWidth    = (fromIntegral width)
     , gHeight   = (fromIntegral height)
-    , asteroids = initializeAsteroids 3
+    , asteroids = initializeAsteroids 2
    }
 
 initializePlayers :: [Player]

@@ -45,13 +45,15 @@ renderAsteroid game = pictures
        scale 1 (0.8) (translate x y $ color (greyN 0.2) (circleSolid r))
      ]
 
-
+updateAsteroidList :: [Asteroid]->[Asteroid]
+updateAsteroidList [ ] =initializeAsteroids 2
+updateAsteroidList asteroids =asteroids
 
 initializeAsteroids  :: Float-> [Asteroid]
 initializeAsteroids 0 = []
 initializeAsteroids count =   Asteroid                  -- idk how this worked but it did :D 
-    { size = 10
+    { size = 3
     , aLocation = ( randX (awidth-count), randY (aheight - count ) )-- rand
     , aSpeed = (randX count, randY count)  -- rand
-    , radius = 80
+    , radius = 60
     }  : initializeAsteroids (count - 1) 

@@ -48,7 +48,7 @@ updatePlayerAsteroidCollision game player asteroids | length asteroids == length
 -- 'Function Composition'
 updateGamePlayersStates :: AsteroidsGame -> AsteroidsGame 
 updateGamePlayersStates game  = game {players = updatePlayers game
-                                     ,asteroids = [updateAsteroid asteroid game| asteroid <- (asteroids game)] } 
+                                     ,asteroids = [updateAsteroid asteroid game| asteroid <- updateAsteroidList(asteroids game)] } 
 
 --------Events Hndling
 handleSingleplayerKeys (EventKey (Char 'd') Down _ _) game = game { players = updateRotationStates (-rotationSpeed) True (players game) 0}    -- Rotate the ship Clock-Wise when press 'd'
