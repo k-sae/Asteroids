@@ -9,11 +9,35 @@ import System.Random
 import Debug.Trace
 ----------Game Updates
 updateSinglePlayerGame :: AsteroidsGame -> AsteroidsGame 
-updateSinglePlayerGame  = updateCollisions . updateGamePlayersStates 
+updateSinglePlayerGame  = updatePlayerAsteroidCollisionV2 . updateGamePlayersStates 
+
+data CollisionItem = CollisionItem 
+     { cPlayers :: Player,
+       cAsteroid :: Asteroid
+     }
 
 --collisions
 updateCollisions :: AsteroidsGame -> AsteroidsGame 
 updateCollisions game =  game { players = [updatePlayerAsteroidCollision game player (asteroids game) |player <- (players game)]}
+
+
+updatePlayerAsteroidCollisionV2 game = game {asteroids = getAsteroids getItems, players = newPlayers (players game)}
+                                        where getItems = [ getCollisionItem player asteroid | player <- (players game) , asteroid <- (asteroids game)]
+                                              getCollisionItem player asteroid = CollisionItem {cPlayers = player, cAsteroid = asteroid}
+                                              newPlayers players | getupdatedPlayers == [] = players
+                                                                 | otherwise = getupdatedPlayers
+                                              getupdatedPlayers = getPlayers getItems
+getAsteroids [] = []
+getAsteroids (i:cIs) | distance (cAsteroid i) (cPlayers i) > (radius (cAsteroid i)) = (cAsteroid i)  : getAsteroids cIs
+                     | otherwise = getAsteroids cIs
+               where distance ast player = sqrt (( fst (plLocation player) - fst (aLocation ast))^2 + ( snd (plLocation player) - snd (aLocation ast))^2)
+
+--DONT USE THIS IN MULTI 
+--Fix This later will introduce a bug in multi player
+getPlayers [] = []
+getPlayers (p:pIs) |  distance (cAsteroid p) (cPlayers p) < (radius (cAsteroid p)) = (cPlayers p) {lives = (lives (cPlayers p)) - 1, plLocation = (0,0), plSpeed = (0,0) } : getPlayers pIs
+                   | otherwise = getPlayers pIs
+               where distance ast player = sqrt (( fst (plLocation player) - fst (aLocation ast))^2 + ( snd (plLocation player) - snd (aLocation ast))^2)
 
 
 updatePlayerAsteroidCollision :: AsteroidsGame -> Player -> [Asteroid] -> Player
