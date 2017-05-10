@@ -9,7 +9,7 @@ import System.Random
 import Debug.Trace
 ----------Game Updates
 updateSinglePlayerGame :: AsteroidsGame -> AsteroidsGame 
-updateSinglePlayerGame  = updatePlayerAsteroidCollisionV2 . updateGamePlayersStates 
+updateSinglePlayerGame  = projectilesCollision . updatePlayerAsteroidCollisionV2 . updateGamePlayersStates 
 
 
 
@@ -61,6 +61,30 @@ updatePlayerAsteroidCollision game player asteroids | length asteroids == length
                                                | otherwise = player {lives = (lives player) - 1, plLocation = (0,0), plSpeed = (0,0) }
                                   where distance ast = sqrt (( fst (plLocation player) - fst (aLocation ast))^2 + ( snd (plLocation player) - snd (aLocation ast))^2)
                                         newAsteroids = [ asteroid | asteroid <- asteroids, distance asteroid > (radius asteroid)]
+
+
+data Holder = Holder 
+     { hProjectiles :: [Projectile] ,
+       hAsteroids :: [Asteroid]
+     }
+
+projectilesCollision :: AsteroidsGame -> AsteroidsGame
+projectilesCollision game = game{asteroids = (hAsteroids calcCollision)}
+                          where calcCollision = projectilesCollisionHelper (projectiles (players game !! 0)) Holder{hProjectiles = [], hAsteroids = (asteroids game)}
+
+projectilesCollisionHelper ::  [Projectile] -> Holder  -> Holder
+projectilesCollisionHelper [] holder = holder
+projectilesCollisionHelper  (pr:prs) holder = projectilesCollisionHelper prs $ holder {hProjectiles = (hProjectiles holder) ++ (hProjectiles prCollision), hAsteroids = (hAsteroids prCollision)}
+                                              where prCollision =  projectilesCollisionHelper2 Holder{hProjectiles = [], hAsteroids = []} pr (hAsteroids holder) False
+
+projectilesCollisionHelper2 :: Holder -> Projectile -> [Asteroid] -> Bool -> Holder
+projectilesCollisionHelper2 holder _ [] True = holder
+projectilesCollisionHelper2 holder projectile [] False = holder{ hProjectiles = projectile : (hProjectiles holder)}
+projectilesCollisionHelper2 holder projectile (a:as) collided
+                                                    | distance a < (radius a) = projectilesCollisionHelper2 holder {hAsteroids =  (hAsteroids holder) ++ breakeAsteroid a 2}  projectile as True
+                                                    | otherwise = projectilesCollisionHelper2 holder {hAsteroids =  a : (hAsteroids holder)}  projectile as collided
+                            where distance ast = sqrt (( fst (prLocation projectile) - fst (aLocation ast))^2 + ( snd (prLocation projectile) - snd (aLocation ast))^2)
+
 
 -- 'Function Composition'
 updateGamePlayersStates :: AsteroidsGame -> AsteroidsGame 
