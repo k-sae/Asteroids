@@ -26,8 +26,8 @@ handleGeneralKeys (EventKey (Char 'q') Down _ _) game = game {gameMode = Menu}  
 handleGeneralKeys (EventKey (Char 'w') Down _ _) game = game {players = updateThrustStatus (players game) True 0 0}
 handleGeneralKeys (EventKey (Char 'w') Up _ _) game = game {players = updateThrustStatus (players game) False 0 0}
 handleGeneralKeys (EventResize (w,h)) game = game {gWidth = (fromIntegral w) , gHeight = (fromIntegral h)}
-handleGeneralKeys (EventKey (SpecialKey KeySpace) Down _ _) game = game {players = updateFireStatus (players game) True}
-handleGeneralKeys (EventKey (SpecialKey KeySpace) Up _ _) game = game {players = updateFireStatus (players game) False}
+handleGeneralKeys (EventKey (SpecialKey KeySpace) Down _ _) game = game {players = updateFireStatus (players game) True 0 0}
+handleGeneralKeys (EventKey (SpecialKey KeySpace) Up _ _) game = game {players = updateFireStatus (players game) False 0 0}
 handleGeneralKeys event game
                             | (gameMode game) == Single = handleSingleplayerKeys event game
                             | (gameMode game) == Cooperative = handleCooperativeKeys event game 

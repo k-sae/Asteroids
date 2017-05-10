@@ -68,13 +68,14 @@ updateRotationStatesHelper playerIndex startCount (p:players) rotationState x
 updateThrustStatus :: [Player] -> Bool -> Int -> Int -> [Player]
 updateThrustStatus [] _ _ _ = []
 updateThrustStatus (p:players) state index startIndex 
-                                                   | startIndex == index = p { isThrusting = state} : updateThrustStatus players state index startIndex 
-                                                   | otherwise = p : updateThrustStatus players state index startIndex 
+                                                   | startIndex == index = p { isThrusting = state} : updateThrustStatus players state index (startIndex+1) 
+                                                   | otherwise = p : updateThrustStatus players state index (startIndex+1) 
 
-updateFireStatus :: [Player] -> Bool -> [Player]
-updateFireStatus players status = [player{isFiring = status} | player <- players]
-
-
+updateFireStatus :: [Player] -> Bool -> Int -> Int ->[Player]
+updateFireStatus [] _ _ _ = []
+updateFireStatus (p:players) status index startIndex 
+                                                   |startIndex == index = p { isFiring = status} : updateFireStatus players status index (startIndex+1) 
+                                                   |otherwise = p : updateFireStatus players status index (startIndex+1) 
 
 
 updatePlayers :: AsteroidsGame -> [Player] -- sry for doing this but its working :) 
