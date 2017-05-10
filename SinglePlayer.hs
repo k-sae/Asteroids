@@ -11,33 +11,49 @@ import Debug.Trace
 updateSinglePlayerGame :: AsteroidsGame -> AsteroidsGame 
 updateSinglePlayerGame  = updatePlayerAsteroidCollisionV2 . updateGamePlayersStates 
 
-data CollisionItem = CollisionItem 
-     { cPlayers :: Player,
-       cAsteroid :: Asteroid
-     }
+
 
 --collisions
-updateCollisions :: AsteroidsGame -> AsteroidsGame 
-updateCollisions game =  game { players = [updatePlayerAsteroidCollision game player (asteroids game) |player <- (players game)]}
-
-
+updatePlayerAsteroidCollisionV2 ::AsteroidsGame ->AsteroidsGame
 updatePlayerAsteroidCollisionV2 game = game {asteroids = getAsteroids getItems, players = newPlayers (players game)}
                                         where getItems = [ getCollisionItem player asteroid | player <- (players game) , asteroid <- (asteroids game)]
                                               getCollisionItem player asteroid = CollisionItem {cPlayers = player, cAsteroid = asteroid}
                                               newPlayers players | getupdatedPlayers == [] = players
                                                                  | otherwise = getupdatedPlayers
                                               getupdatedPlayers = getPlayers getItems
+getAsteroids :: [CollisionItem] ->[Asteroid] 
 getAsteroids [] = []
 getAsteroids (i:cIs) | distance (cAsteroid i) (cPlayers i) > (radius (cAsteroid i)) = (cAsteroid i)  : getAsteroids cIs
-                     | otherwise = getAsteroids cIs
+                     | otherwise =  (breakeAsteroid (cAsteroid i)  2) ++ getAsteroids cIs
                where distance ast player = sqrt (( fst (plLocation player) - fst (aLocation ast))^2 + ( snd (plLocation player) - snd (aLocation ast))^2)
 
 --DONT USE THIS IN MULTI 
 --Fix This later will introduce a bug in multi player
+getPlayers:: [CollisionItem] ->[Player] 
 getPlayers [] = []
 getPlayers (p:pIs) |  distance (cAsteroid p) (cPlayers p) < (radius (cAsteroid p)) = (cPlayers p) {lives = (lives (cPlayers p)) - 1, plLocation = (0,0), plSpeed = (0,0) } : getPlayers pIs
+                   
                    | otherwise = getPlayers pIs
                where distance ast player = sqrt (( fst (plLocation player) - fst (aLocation ast))^2 + ( snd (plLocation player) - snd (aLocation ast))^2)
+
+
+
+breakeAsteroid :: Asteroid ->Float->[Asteroid] 
+breakeAsteroid  asteroid count 
+  |count == 0 ||  (size asteroid)  == 0 =[ ]
+breakeAsteroid asteroid  count=asteroid{
+  size = (size asteroid) -1
+  , aLocation = ( randX (awidth-count), randY (aheight - count ) )
+  , aSpeed = (randX count, randY count) 
+  , radius = (radius asteroid) / 2
+} :  breakeAsteroid asteroid  (count -1)
+
+--funcation not  use  but  kareem need
+updateCollisions :: AsteroidsGame -> AsteroidsGame 
+updateCollisions game =  game { players = [updatePlayerAsteroidCollision game player (asteroids game) |player <- (players game)]}
+
+
+
 
 
 updatePlayerAsteroidCollision :: AsteroidsGame -> Player -> [Asteroid] -> Player
@@ -45,6 +61,7 @@ updatePlayerAsteroidCollision game player asteroids | length asteroids == length
                                                | otherwise = player {lives = (lives player) - 1, plLocation = (0,0), plSpeed = (0,0) }
                                   where distance ast = sqrt (( fst (plLocation player) - fst (aLocation ast))^2 + ( snd (plLocation player) - snd (aLocation ast))^2)
                                         newAsteroids = [ asteroid | asteroid <- asteroids, distance asteroid > (radius asteroid)]
+
 -- 'Function Composition'
 updateGamePlayersStates :: AsteroidsGame -> AsteroidsGame 
 updateGamePlayersStates game  = game {players = updatePlayers game
