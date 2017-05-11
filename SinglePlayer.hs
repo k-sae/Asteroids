@@ -69,8 +69,16 @@ data Holder = Holder
      }
 
 projectilesCollision :: AsteroidsGame -> AsteroidsGame
-projectilesCollision game = game{asteroids = (hAsteroids calcCollision)}
-                          where calcCollision = projectilesCollisionHelper (projectiles (players game !! 0)) Holder{hProjectiles = [], hAsteroids = (asteroids game)}
+projectilesCollision game = updatePlayerCollision (players game) $ game {players = []}
+                         
+
+updatePlayerCollision :: [Player] -> AsteroidsGame -> AsteroidsGame
+updatePlayerCollision [] game = game
+updatePlayerCollision (p:ps) game = updatePlayerCollision ps $ game { players = bindPlayers, asteroids = (hAsteroids calcCollision)}
+                                     where calcCollision = projectilesCollisionHelper (projectiles (p)) Holder{hProjectiles = [], hAsteroids = (asteroids game)}
+                                           bindPlayers = p {projectiles = (hProjectiles calcCollision)} : (players game)
+bindPlayers :: Player -> [Player] -> [Player]
+bindPlayers p ps = p : ps
 
 projectilesCollisionHelper ::  [Projectile] -> Holder  -> Holder
 projectilesCollisionHelper [] holder = holder
