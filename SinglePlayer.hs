@@ -43,7 +43,7 @@ breakeAsteroid  asteroid count
   |count == 0 ||  (size asteroid)  == 0 =[ ]
 breakeAsteroid asteroid  count=asteroid{
   size = (size asteroid) -1
-  , aLocation = ( randX (awidth-count), randY (aheight - count ) )
+  , aLocation = ( fst (aLocation asteroid), snd (aLocation asteroid) )
   , aSpeed = (randX count, randY count) 
   , radius = (radius asteroid) / 2
 } :  breakeAsteroid asteroid  (count -1)
