@@ -63,12 +63,6 @@ updatePlayerAsteroidCollision game player asteroids | length asteroids == length
                                         newAsteroids = [ asteroid | asteroid <- asteroids, distance asteroid > (radius asteroid)]
 
 
-data Holder = Holder 
-     { hProjectiles :: [Projectile] ,
-       hAsteroids :: [Asteroid]
-     }
-
-
 ----------Game Updates
 updateSinglePlayerGame ::  AsteroidsGame -> AsteroidsGame 
 updateSinglePlayerGame  = updateGamePlayersStates . initializeOnePlayer

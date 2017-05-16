@@ -59,3 +59,11 @@ data CollisionItem = CollisionItem
        cAsteroid :: Asteroid
      }
 data GameMode = Menu | Pause | Single | Cooperative | Versus deriving Eq  -- deriving Eq so the gamemodes will be comparable
+
+
+data Holder = Holder 
+     { hProjectiles :: [Projectile] ,
+       hAsteroids :: [Asteroid],
+       noOfCollision :: Int
+     }
+
