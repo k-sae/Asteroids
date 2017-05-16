@@ -134,7 +134,7 @@ initializeProjectile player = Projectile
                               {
                                  prLocation = (plLocation player)
                                 ,prSpeed = (cos (degToRad ((degree player) - 180)),(sin (degToRad ((degree player) - 180))))
-                                ,prLifeTime = 4000
+                                ,prLifeTime = 1000
                               }
 
 --update projectile Hazem will have Fun here 

@@ -65,6 +65,7 @@ data GameMode = Menu | Pause | Single | Cooperative | Versus deriving Eq  -- der
 data Holder = Holder 
      { hProjectiles :: [Projectile] ,
        hAsteroids :: [Asteroid],
-       noOfCollision :: Float
+       noOfCollision :: Float,
+       hPlayer :: Player
      }
 
