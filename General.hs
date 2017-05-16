@@ -25,9 +25,11 @@ projectilesCollision game = updatePlayerCollision (players game) $ game {players
 
 updatePlayerCollision :: [Player] -> AsteroidsGame -> AsteroidsGame
 updatePlayerCollision [] game = game
-updatePlayerCollision (p:ps) game = updatePlayerCollision ps $ game { players = bindPlayers, asteroids = (hAsteroids calcCollision)}
-                                     where calcCollision = projectilesCollisionHelper (projectiles (p)) Holder{hProjectiles = [], hAsteroids = (asteroids game), noOfCollision = 0, hPlayer = p}
-                                           bindPlayers = (players game) ++ [p {projectiles = (hProjectiles calcCollision), score = (noOfCollision calcCollision)*10 + (score p)} ]
+updatePlayerCollision (p:ps) game = updatePlayerCollision ps $ game { asteroids = (hAsteroids prAstCollision), players = bindPlayers}
+                                     where prAstCollision = projectilesCollisionHelper (projectiles (p)) Holder{hProjectiles = [], hAsteroids = (asteroids game), noOfCollision = 0, hPlayer = p}
+                                           bindPlayers = (players game) ++ [(hPlayer plAstCollision)]
+                                           plAstCollision = General.updatePlayerAsteroidCollision updateP  (asteroids game) Holder {hProjectiles = [], hAsteroids = (asteroids game), noOfCollision = 0, hPlayer = updateP} 
+                                           updateP = p {projectiles = (hProjectiles prAstCollision), score = (noOfCollision prAstCollision)*10 + (score p), lives = (lives (hPlayer prAstCollision))}
 
 projectilesCollisionHelper ::  [Projectile] -> Holder  -> Holder
 projectilesCollisionHelper [] holder = holder
@@ -40,13 +42,18 @@ projectilesCollisionHelper2 holder projectile [] False = holder{ hProjectiles = 
 -- 2 possible issues up here
 --update: i have choosen to ignore them as the fault value will neglictable (nearly 2px)
 projectilesCollisionHelper2 holder projectile (a:as) collided
-                                                    | distance (aLocation a) playerLocation <= (radius a)   = trace "collided" $ projectilesCollisionHelper2 holder { hPlayer = updateCollidedPlayer (hPlayer holder)}  projectile as True
                                                     | distance (aLocation a) (prLocation projectile) <= (radius a) = projectilesCollisionHelper2 holder {hAsteroids =  (hAsteroids holder) ++ breakeAsteroid a 2, noOfCollision = (noOfCollision holder) + 1}  projectile as True
                                                     | otherwise = projectilesCollisionHelper2 holder {hAsteroids =  a : (hAsteroids holder)}  projectile as collided
-                            where distance (x1,y1) (x2,y2) =  sqrt ((x1 - x2)^2 + (y1 - y2)^2)
-                                  playerLocation = (plLocation (hPlayer holder))
-                                  updateCollidedPlayer player = player { lives = (lives player) - 1} 
 
+distance :: (Float, Float) -> (Float, Float) -> Float
+distance (x1,y1) (x2,y2) =  sqrt ((x1 - x2)^2 + (y1 - y2)^2)
+updatePlayerAsteroidCollision:: Player -> [Asteroid] -> Holder -> Holder
+updatePlayerAsteroidCollision _ [] holder = holder
+updatePlayerAsteroidCollision player (a:as) holder 
+                                                  | distance (aLocation a) playerLocation <= (radius a) =  General.updatePlayerAsteroidCollision player as holder { hPlayer = updateCollidedPlayer (hPlayer holder)}  
+                                                  | otherwise =  General.updatePlayerAsteroidCollision player as holder {hAsteroids =  a : (hAsteroids holder)} 
+                            where playerLocation = (plLocation (hPlayer holder))
+                                  updateCollidedPlayer player = player { lives = (lives player) - 1} 
 --distance ast = sqrt (( fst (prLocation projectile) - fst (aLocation ast))^2 + ( snd (prLocation projectile) - snd (aLocation ast))^2)
                                                 -- 
 
