@@ -5,7 +5,10 @@ import Shapes
 import DataTypes
 import MainMenu
 import Pause
+import General
 import SinglePlayer
+import Player
+import Cooperative
 import Asteroids
 import System.Random
 --functions in this file is responsible for finding the appropriate function according to mode
@@ -27,36 +30,20 @@ main = play window background fps initialState render handleKeys update
 --initialize the states of the game
 initialState :: AsteroidsGame
 initialState    = Game
-   { players    = initializePlayers
+   { players    = []
     , gameMode  = Menu
     , gWidth    = (fromIntegral width)
     , gHeight   = (fromIntegral height)
     , asteroids = initializeAsteroids 2
    }
 
-initializePlayers :: [Player]
-initializePlayers = [Player                  -- idk how this worked but it did :D 
-    { projectiles = []
-    , degree      = 0
-    , plSpeed     = (0,0)
-    , plLocation  = (0,0)
-    , rotatingBy  = rotationSpeed
-    , firingSpeed = 10
-    , isrotating  = False
-    , isFiring    = False
-    , firemode    = 1
-    , plColor     = (makeColorI 51 122 183 255)
-    , isThrusting = False
-    , score       = 0
-    , highScore   = 0
-    , lives       = 3
-    }]
+
 
 -- the game foreach loop
 update :: Float -> AsteroidsGame -> AsteroidsGame                        -- update the game according to the Game Mode
 update seconds game | (gameMode game) == Menu = updateMenu seconds initialState  -- call the update menue from MainMenu.hs file
                     | (gameMode game) == Pause = updatePause seconds game
-                    | otherwise = SinglePlayer.updateSinglePlayerGame  game
+                    | otherwise = General.updateGeneralGame game
 
 -- handle game events like thrust button etc
 
@@ -67,8 +54,7 @@ handleKeys :: Event -> AsteroidsGame -> AsteroidsGame
 handleKeys event game
                        | mode == Menu = handleMenuKeys event game          --same as the update function here u call the appropriate key events 
                        | mode == Pause = handlePauseKeys event game
-                       | mode == Single = handleSingleplayerKeys event game
-                       | otherwise = game
+                       | otherwise = handleGeneralKeys event game
                   where mode = gameMode game
 
 
@@ -79,4 +65,8 @@ render game
 
  | (gameMode game) == Pause = pauseRender game
 
- | otherwise = spRender game
+-- | (gameMode game) == Single = spRender game
+
+-- | (gameMode game) == Cooperative = coRender game
+
+ | otherwise = generalRender game

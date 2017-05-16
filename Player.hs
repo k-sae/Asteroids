@@ -1,6 +1,82 @@
 module Player where
 import DataTypes
 import Graphics.Gloss.Geometry.Angle
+import Graphics.Gloss.Interface.Pure.Game
+
+
+initializePlayers :: Float -> [Player]
+initializePlayers 1 = [Player                  -- idk how this worked but it did :D 
+    { projectiles = []
+    , degree      = 0
+    , plSpeed     = (0,0)
+    , plLocation  = (0,0)
+    , rotatingBy  = rotationSpeed
+    , firingSpeed = 10
+    , isrotating  = False
+    , isFiring    = False
+    , firemode    = 1
+    , plColor     = (makeColorI 51 122 183 255)
+    , isThrusting = False
+    , score       = 0
+    , highScore   = 0
+    , lives       = 3
+    }]
+    
+initializePlayers 2 = [Player                  -- idk how this worked but it did :D 
+    { projectiles = []
+    , degree      = 180
+    , plSpeed     = (0,0)
+    , plLocation  = ((-200),0)
+    , rotatingBy  = rotationSpeed
+    , firingSpeed = 10
+    , isrotating  = False
+    , isFiring    = False
+    , firemode    = 1
+    , plColor     = (makeColorI 51 122 183 255)
+    , isThrusting = False
+    , score       = 0
+    , highScore   = 0
+    , lives       = 3
+    },
+    Player                  -- idk how this worked but it did :D 
+    { projectiles = []
+    , degree      = 0
+    , plSpeed     = (0,0)
+    , plLocation  = (200,0)
+    , rotatingBy  = rotationSpeed
+    , firingSpeed = 10
+    , isrotating  = False
+    , isFiring    = False
+    , firemode    = 1
+    , plColor     = (makeColorI 51 222 10 255)
+    , isThrusting = False
+    , score       = 0
+    , highScore   = 0
+    , lives       = 3
+    }]
+
+--The x value will be the rotatingBy value!
+updateRotationStates :: Float -> Bool -> [Player] -> Int -> [Player] 
+updateRotationStates x rotationState players index = updateRotationStatesHelper index 0 players rotationState x
+
+--handle player interaction according to its index
+updateRotationStatesHelper ::  Int -> Int -> [Player] -> Bool -> Float-> [Player]
+updateRotationStatesHelper _ _ [] _ _ = [] 
+updateRotationStatesHelper playerIndex startCount (p:players) rotationState x
+                                                                           | startCount == playerIndex = p {isrotating = rotationState , rotatingBy = x}:updateRotationStatesHelper playerIndex (startCount+1) players rotationState x
+                                                                           | otherwise = p:updateRotationStatesHelper playerIndex (startCount+1) players rotationState x
+updateThrustStatus :: [Player] -> Bool -> Int -> Int -> [Player]
+updateThrustStatus [] _ _ _ = []
+updateThrustStatus (p:players) state index startIndex 
+                                                   | startIndex == index = p { isThrusting = state} : updateThrustStatus players state index (startIndex+1) 
+                                                   | otherwise = p : updateThrustStatus players state index (startIndex+1) 
+
+updateFireStatus :: [Player] -> Bool -> Int -> Int ->[Player]
+updateFireStatus [] _ _ _ = []
+updateFireStatus (p:players) status index startIndex 
+                                                   |startIndex == index = p { isFiring = status} : updateFireStatus players status index (startIndex+1) 
+                                                   |otherwise = p : updateFireStatus players status index (startIndex+1) 
+
 
 updatePlayers :: AsteroidsGame -> [Player] -- sry for doing this but its working :) 
 updatePlayers game = [(updateProjectiles.updateSpeed.rotateBy.updateLocationBy game) x|x <- (players game)]

@@ -8,8 +8,8 @@ import Player
 import System.Random
 import Debug.Trace
 ----------Game Updates
-updateSinglePlayerGame :: AsteroidsGame -> AsteroidsGame 
-updateSinglePlayerGame  = projectilesCollision . updatePlayerAsteroidCollisionV2 . updateGamePlayersStates 
+-- updateSinglePlayerGame :: AsteroidsGame -> AsteroidsGame 
+-- updateSinglePlayerGame  = projectilesCollision . updatePlayerAsteroidCollisionV2 . updateGamePlayersStates 
 
 
 
@@ -94,71 +94,35 @@ projectilesCollisionHelper2 holder projectile (a:as) collided
                             where distance ast = sqrt (( fst (prLocation projectile) - fst (aLocation ast))^2 + ( snd (prLocation projectile) - snd (aLocation ast))^2)
 
 
+----------Game Updates
+updateSinglePlayerGame ::  AsteroidsGame -> AsteroidsGame 
+updateSinglePlayerGame  = updateGamePlayersStates . initializeOnePlayer
+
+initializeOnePlayer :: AsteroidsGame -> AsteroidsGame
+initializeOnePlayer game | length(players game) == 0 = game{players = initializePlayers 1}
+                     | otherwise = game
+
 -- 'Function Composition'
 updateGamePlayersStates :: AsteroidsGame -> AsteroidsGame 
 updateGamePlayersStates game  = game {players = updatePlayers game
                                      ,asteroids = [updateAsteroid asteroid game| asteroid <- updateAsteroidList(asteroids game)] } 
 
 --------Events Hndling
-handleSingleplayerKeys (EventKey (Char 'd') Down _ _) game = game { players = updateRotationStates (-rotationSpeed) True (players game) 0}    -- Rotate the ship Clock-Wise when press 'd'
-handleSingleplayerKeys (EventKey (Char 'd') Up _ _) game = game { players = updateRotationStates (-rotationSpeed) False (players game) 0}
-
-handleSingleplayerKeys (EventKey (Char 'a') Down _ _) game = game { players = updateRotationStates (rotationSpeed) True (players game) 0}   -- Rotate the ship Anti_Clock-Wise when press 'a'
-handleSingleplayerKeys (EventKey (Char 'a') Up _ _) game = game { players = updateRotationStates (rotationSpeed) False (players game) 0}
-handleSingleplayerKeys (EventKey (Char 'p') Down _ _) game = game {gameMode = Pause}   -- Pause the game when press 'p'
-handleSingleplayerKeys (EventKey (Char 'q') Down _ _) game = game {gameMode = Menu}   -- Return to the menu and quit the game when press 'q'
-handleSingleplayerKeys (EventKey (Char 'w') Down _ _) game = game {players = updateThrustStatus (players game) True 0 0}
-handleSingleplayerKeys (EventKey (Char 'w') Up _ _) game = game {players = updateThrustStatus (players game) False 0 0}
-handleSingleplayerKeys (EventResize (w,h)) game = game {gWidth = (fromIntegral w) , gHeight = (fromIntegral h)}
-handleSingleplayerKeys (EventKey (SpecialKey KeySpace) Down _ _) game = game {players = updateFireStatus (players game) True}
-handleSingleplayerKeys (EventKey (SpecialKey KeySpace) Up _ _) game = game {players = updateFireStatus (players game) False}
-
+handleSingleplayerKeys :: Event -> AsteroidsGame -> AsteroidsGame
 handleSingleplayerKeys _ game = game
-
---hazem add key event on spacebar to fire 
--- u may use this reference: https://hackage.haskell.org/package/gloss-1.11.1.1/docs/Graphics-Gloss-Interface-IO-Game.html
-
-
---The x value will be the rotatingBy value!
-updateRotationStates :: Float -> Bool -> [Player] -> Int -> [Player] 
-updateRotationStates x rotationState players index = updateRotationStatesHelper index 0 players rotationState x
-
---handle player interaction according to its index
-updateRotationStatesHelper ::  Int -> Int -> [Player] -> Bool -> Float-> [Player]
-updateRotationStatesHelper _ _ [] _ _ = [] 
-updateRotationStatesHelper playerIndex startCount (p:players) rotationState x
-                                                                           | startCount == playerIndex = p {isrotating = rotationState , rotatingBy = x}:updateRotationStatesHelper playerIndex (startCount+1) players rotationState x
-                                                                           | otherwise = p:updateRotationStatesHelper playerIndex (startCount+1) players rotationState x
-updateThrustStatus :: [Player] -> Bool -> Int -> Int -> [Player]
-updateThrustStatus [] _ _ _ = []
-updateThrustStatus (p:players) state index startIndex 
-                                                   | startIndex == index = p { isThrusting = state} : updateThrustStatus players state index startIndex 
-                                                   | otherwise = p : updateThrustStatus players state index startIndex 
-
-updateFireStatus :: [Player] -> Bool -> [Player]
-updateFireStatus players status = [player{isFiring = status} | player <- players]
 
 spRender :: AsteroidsGame -> Picture
 spRender game = pictures
    ([
-      --assume this value is the number of stars
-      mkStars 111
-   ]
-   ++
-   [
-      mkTitles (highScore player) (score player) (lives player) (plColor player) | player <- (players game)
-   ]
-   ++
-   [
-      renderAsteroid game
-   ]
-   ++
-   [
       mkShip (isThrusting player) (plColor player) (plLocation player) $ (degree player) | player <- (players game) -- Belal Check This  <-- :)
    ]
    ++
    [
       mkFire (projectiles player) | player <- (players game)
+   ]
+   ++
+   [
+      mkTitles (highScore player) (score player) (lives player) (plColor player) | player <- (players game)
    ])
    
    where
@@ -175,25 +139,8 @@ spRender game = pictures
        translate x y $ color col $ solidArc (degree-15) (degree+15) 37
      ]
 
-    mkStars :: Int -> Picture
-    mkStars n = pictures
-     [
-       translate (fst l) (snd l) $ color blue (circleSolid 2) | l <- getVal (randX n) (randY n)
-     ]
-
     mkFire :: [Projectile] -> Picture
     mkFire projectiles = pictures [translate (fst (prLocation projectile)) (snd (prLocation projectile)) (color red (circleSolid 5)) | projectile <- projectiles]
-
-    randX :: Int -> [Float]
-    randX n = take n (randomRs ((-(gWidth game)), (gWidth game) :: Float) (mkStdGen n))
-    randY :: Int -> [Float]
-    randY n = take n (randomRs ((-(gHeight game)), (gHeight game) :: Float) (mkStdGen (n*2)))
-
-    getVal :: [Float] -> [Float] -> [(Float,Float)] 
-    getVal [] [] = []
-    getVal [] _ = []
-    getVal _ [] = []
-    getVal (x:xs) (y:ys) = (x,y) : (getVal xs ys)
 
     mkTitles :: Float -> Float -> Float -> Color -> Picture
     mkTitles hs s l col = pictures
