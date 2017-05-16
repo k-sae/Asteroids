@@ -139,8 +139,8 @@ initializeProjectile player = Projectile
 
 --update projectile Hazem will have Fun here 
 updateProjectile :: Projectile -> Player -> Projectile
-updateProjectile projectile player = projectile { prLocation = (fst (prLocation projectile) + (fst (prSpeed projectile))  , snd (prLocation projectile) + (snd (prSpeed projectile)))
-                                                  ,prLifeTime = prLifeTime projectile - 10 
+updateProjectile projectile player = projectile {  prLocation = (fst (prLocation projectile) + (fst (prSpeed projectile) *5)  , snd (prLocation projectile) + (snd (prSpeed projectile) *5))
+                                                 , prLifeTime = prLifeTime projectile - 10 
                                                 }
 --TODO
 --    1- initialize upon key event
