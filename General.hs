@@ -27,7 +27,7 @@ updatePlayerCollision :: [Player] -> AsteroidsGame -> AsteroidsGame
 updatePlayerCollision [] game = game
 updatePlayerCollision (p:ps) game = updatePlayerCollision ps $ game { players = bindPlayers, asteroids = (hAsteroids calcCollision)}
                                      where calcCollision = projectilesCollisionHelper (projectiles (p)) Holder{hProjectiles = [], hAsteroids = (asteroids game), noOfCollision = 0}
-                                           bindPlayers = (players game) ++ [p {projectiles = (hProjectiles calcCollision), score = (noOfCollision calcCollision) + (score p)} ]
+                                           bindPlayers = (players game) ++ [p {projectiles = (hProjectiles calcCollision), score = (noOfCollision calcCollision)*10 + (score p)} ]
 
 projectilesCollisionHelper ::  [Projectile] -> Holder  -> Holder
 projectilesCollisionHelper [] holder = holder

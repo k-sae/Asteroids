@@ -6,7 +6,8 @@ import Graphics.Gloss.Interface.Pure.Game
 
 initializePlayers :: Float -> [Player]
 initializePlayers 1 = [Player                  -- idk how this worked but it did :D 
-    { projectiles = []
+    { pID = 1
+    , projectiles = []
     , degree      = 0
     , plSpeed     = (0,0)
     , plLocation  = (0,0)
@@ -23,7 +24,8 @@ initializePlayers 1 = [Player                  -- idk how this worked but it did
     }]
     
 initializePlayers 2 = [Player                  -- idk how this worked but it did :D 
-    { projectiles = []
+    { pID = 1
+    , projectiles = []
     , degree      = 180
     , plSpeed     = (0,0)
     , plLocation  = ((-200),0)
@@ -39,7 +41,8 @@ initializePlayers 2 = [Player                  -- idk how this worked but it did
     , lives       = 3
     },
     Player                  -- idk how this worked but it did :D 
-    { projectiles = []
+    { pID = 2
+    , projectiles = []
     , degree      = 0
     , plSpeed     = (0,0)
     , plLocation  = (200,0)

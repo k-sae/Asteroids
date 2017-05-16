@@ -16,7 +16,8 @@ accelerateSpeed = 0.3
 thrustMaxSpeed = 10 
 
 data Player = Player 
-    { degree :: Float            --  the degree will be W.R.T X-axis like this   (>)  <- space ship at degree 0
+    { pID :: Int
+    , degree :: Float            --  the degree will be W.R.T X-axis like this   (>)  <- space ship at degree 0
     , plSpeed  :: (Float, Float)  -- speed W.R.T (x and y axes)
     , plLocation :: (Float, Float) -- location W.R.T (x and y axes)
     , rotatingBy :: Float

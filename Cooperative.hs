@@ -42,7 +42,7 @@ coRender game = pictures
    ]
    ++
    [
-      mkTitles (highScore player) (score player) (lives player) (plColor player) (i)| player <- (players game), i <- [1..(length (players game))]
+      mkTitles (highScore player) (score player) (lives player) (plColor player) (pID player)| player <- (players game)
    ])
    
    where
