@@ -8,7 +8,7 @@ import Shapes
 import Asteroids
 import Player
 import System.Random
-
+import Debug.Trace
 ----------Game Updates
 updateGeneralGame :: AsteroidsGame -> AsteroidsGame 
 updateGeneralGame  = projectilesCollision.updateGameBasedOnMode
@@ -26,20 +26,20 @@ projectilesCollision game = updatePlayerCollision (players game) $ game {players
 updatePlayerCollision :: [Player] -> AsteroidsGame -> AsteroidsGame
 updatePlayerCollision [] game = game
 updatePlayerCollision (p:ps) game = updatePlayerCollision ps $ game { players = bindPlayers, asteroids = (hAsteroids calcCollision)}
-                                     where calcCollision = projectilesCollisionHelper (projectiles (p)) Holder{hProjectiles = [], hAsteroids = (asteroids game)}
-                                           bindPlayers = (players game) ++ [p {projectiles = (hProjectiles calcCollision)} ]
+                                     where calcCollision = projectilesCollisionHelper (projectiles (p)) Holder{hProjectiles = [], hAsteroids = (asteroids game), noOfCollision = 0}
+                                           bindPlayers = (players game) ++ [p {projectiles = (hProjectiles calcCollision), score = (noOfCollision calcCollision) + (score p)} ]
 
 projectilesCollisionHelper ::  [Projectile] -> Holder  -> Holder
 projectilesCollisionHelper [] holder = holder
-projectilesCollisionHelper  (pr:prs) holder = projectilesCollisionHelper prs $ holder {hProjectiles = (hProjectiles holder) ++ (hProjectiles prCollision), hAsteroids = (hAsteroids prCollision)}
-                                              where prCollision =  projectilesCollisionHelper2 Holder{hProjectiles = [], hAsteroids = []} pr (hAsteroids holder) False
+projectilesCollisionHelper  (pr:prs) holder = projectilesCollisionHelper prs $ holder {hProjectiles = (hProjectiles holder) ++ (hProjectiles prCollision), hAsteroids = (hAsteroids prCollision), noOfCollision = (noOfCollision holder) + (noOfCollision prCollision)}
+                                              where prCollision =  projectilesCollisionHelper2 Holder{hProjectiles = [], hAsteroids = [], noOfCollision = 0} pr (hAsteroids holder) False
 
 projectilesCollisionHelper2 :: Holder -> Projectile -> [Asteroid] -> Bool -> Holder
 projectilesCollisionHelper2 holder _ [] True = holder
 projectilesCollisionHelper2 holder projectile [] False = holder{ hProjectiles = projectile : (hProjectiles holder)}
 projectilesCollisionHelper2 holder projectile (a:as) collided
-                                                    | distance a < (radius a) = projectilesCollisionHelper2 holder {hAsteroids =  (hAsteroids holder) ++ breakeAsteroid a 2}  projectile as True
-                                                    | otherwise = projectilesCollisionHelper2 holder {hAsteroids =  a : (hAsteroids holder)}  projectile as collided
+                                                    | distance a < (radius a) = projectilesCollisionHelper2 holder {hAsteroids =  (hAsteroids holder) ++ breakeAsteroid a 2, noOfCollision = (noOfCollision holder) + 1}  projectile as True
+                                                    | otherwise =  projectilesCollisionHelper2 holder {hAsteroids =  a : (hAsteroids holder)}  projectile as collided
                             where distance ast = sqrt (( fst (prLocation projectile) - fst (aLocation ast))^2 + ( snd (prLocation projectile) - snd (aLocation ast))^2)
 
 
