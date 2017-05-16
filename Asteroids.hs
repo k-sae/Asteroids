@@ -42,7 +42,7 @@ renderAsteroid game = pictures
     mkAst :: Float -> (Float, Float) -> Picture
     mkAst r (x,y) = pictures
      [
-       scale 1 (0.8) (translate x y $ color (greyN 0.2) (circleSolid r))
+       (translate x y $ color (greyN 0.2) (circleSolid r))
      ]
 
 updateAsteroidList :: [Asteroid]->[Asteroid]

@@ -38,7 +38,7 @@ projectilesCollisionHelper2 :: Holder -> Projectile -> [Asteroid] -> Bool -> Hol
 projectilesCollisionHelper2 holder _ [] True = holder
 projectilesCollisionHelper2 holder projectile [] False = holder{ hProjectiles = projectile : (hProjectiles holder)}
 projectilesCollisionHelper2 holder projectile (a:as) collided
-                                                    | distance a < (radius a) = projectilesCollisionHelper2 holder {hAsteroids =  (hAsteroids holder) ++ breakeAsteroid a 2}  projectile as True
+                                                    | distance a <= (radius a) = projectilesCollisionHelper2 holder {hAsteroids =  (hAsteroids holder) ++ breakeAsteroid a 2}  projectile as True
                                                     | otherwise = projectilesCollisionHelper2 holder {hAsteroids =  a : (hAsteroids holder)}  projectile as collided
                             where distance ast = sqrt (( fst (prLocation projectile) - fst (aLocation ast))^2 + ( snd (prLocation projectile) - snd (aLocation ast))^2)
 
