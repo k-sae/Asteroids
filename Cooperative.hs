@@ -17,7 +17,7 @@ initializeTwoPlayer game | length(players game) <= 1 = game{players = initialize
 -- 'Function Composition'
 updateGamePlayersStates :: AsteroidsGame -> AsteroidsGame 
 updateGamePlayersStates game  = game {players = updatePlayers game
-                                     ,asteroids = [updateAsteroid asteroid game| asteroid <- (asteroids game)] } 
+                                     ,asteroids = [updateAsteroid asteroid game| asteroid <- updateAsteroidList(asteroids game)] } 
 
 --------Events Hndling
 handleCooperativeKeys :: Event -> AsteroidsGame -> AsteroidsGame
