@@ -42,7 +42,7 @@ projectilesCollisionHelper2 holder projectile [] False = holder{ hProjectiles = 
 -- 2 possible issues up here
 --update: i have choosen to ignore them as the fault value will neglictable (nearly 2px)
 projectilesCollisionHelper2 holder projectile (a:as) collided
-                                                    | distance (aLocation a) (prLocation projectile) <= (radius a) = projectilesCollisionHelper2 holder {hAsteroids =  (hAsteroids holder) ++ breakeAsteroid a 2, noOfCollision = (noOfCollision holder) + 1}  projectile as True
+                                                    | distance (aLocation a) (prLocation projectile) <= (radius a) = projectilesCollisionHelper2 holder {hAsteroids =  (hAsteroids holder) ++ breakAsteroid a 2, noOfCollision = (noOfCollision holder) + 1}  projectile as True
                                                     | otherwise = projectilesCollisionHelper2 holder {hAsteroids =  a : (hAsteroids holder)}  projectile as collided
 
 distance :: (Float, Float) -> (Float, Float) -> Float
@@ -54,6 +54,20 @@ updatePlayerAsteroidCollision player (a:as) holder
                                                   | otherwise =   General.updatePlayerAsteroidCollision player as holder {hAsteroids =  a : (hAsteroids holder)} 
                             where playerLocation = (plLocation (hPlayer holder))
                                   updateCollidedPlayer player = player { lives = (lives player) - 1} 
+
+
+
+
+breakAsteroid :: Asteroid ->Float->[Asteroid] 
+breakAsteroid  asteroid count 
+  |count == 0 ||  (size asteroid)  == 0 =[ ]
+breakAsteroid asteroid  count=asteroid{
+  size = (size asteroid) -1
+  , aLocation = ( fst (aLocation asteroid), snd (aLocation asteroid) )
+  , aSpeed = (randX count, randY count) 
+  , radius = (radius asteroid) / 2
+} :  breakAsteroid asteroid  (count -1)
+
 --distance ast = sqrt (( fst (prLocation projectile) - fst (aLocation ast))^2 + ( snd (prLocation projectile) - snd (aLocation ast))^2)
                                                 -- 
 
