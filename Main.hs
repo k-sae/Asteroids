@@ -29,9 +29,9 @@ main = play window background fps initialState render handleKeys update
 ------------------- Basic Functions --
 
 --initialize the states of the game
-initialState :: AsteroidsGame
+initialState :: AsteroidsGame -- ^ example 2
 initialState    = Game
-   { players    = []
+   { players    = []  
     , gameMode  = Menu
     , gWidth    = (fromIntegral width)
     , gHeight   = (fromIntegral height)
@@ -39,9 +39,10 @@ initialState    = Game
    }
 
 
-
--- the game foreach loop
-update :: Float -> AsteroidsGame -> AsteroidsGame                        -- update the game according to the Game Mode
+-- | update the game according to the Game Mode
+update :: Float -- ^ example 3
+ -> AsteroidsGame -- ^ example 3
+ -> AsteroidsGame -- ^ example 3                      
 update seconds game | (gameMode game) == Menu = updateMenu seconds initialState  -- call the update menue from MainMenu.hs file
                     | (gameMode game) == Pause = updatePause seconds game
                     | otherwise = General.updateGeneralGame game
