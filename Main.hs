@@ -34,6 +34,7 @@ initialState :: AsteroidsGame -- ^ initialized game
 initialState    = Game
    { players    = []  
     , gameMode  = Menu
+    , whereFrom = Menu
     , gWidth    = (fromIntegral width)
     , gHeight   = (fromIntegral height)
     , asteroids = initializeAsteroids 2

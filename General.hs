@@ -120,7 +120,7 @@ handleGeneralKeys (EventKey (Char 'd') Down _ _) game = game { players = updateR
 handleGeneralKeys (EventKey (Char 'd') Up _ _) game = game { players = updateRotationStates (players game) (-rotationSpeed) False 1}
 handleGeneralKeys (EventKey (Char 'a') Down _ _) game = game { players = updateRotationStates (players game) (rotationSpeed) True 1}   -- Rotate the ship Anti_Clock-Wise when press 'a'
 handleGeneralKeys (EventKey (Char 'a') Up _ _) game = game { players = updateRotationStates (players game) (rotationSpeed) False 1}
-handleGeneralKeys (EventKey (Char 'p') Down _ _) game = game {gameMode = Pause}   -- Pause the game when press 'p'
+handleGeneralKeys (EventKey (Char 'p') Down _ _) game = game {whereFrom = (gameMode game), gameMode = Pause}   -- Pause the game when press 'p'
 handleGeneralKeys (EventKey (Char 'q') Down _ _) game = game {gameMode = Menu}   -- Return to the menu and quit the game when press 'q'
 handleGeneralKeys (EventKey (Char 'w') Down _ _) game = game {players = updateThrustStatus (players game) True 1}
 handleGeneralKeys (EventKey (Char 'w') Up _ _) game = game {players = updateThrustStatus (players game) False 1}
