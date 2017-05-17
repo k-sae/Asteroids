@@ -92,7 +92,7 @@ breakAsteroid  asteroid count
 breakAsteroid asteroid  count=asteroid{
   size = (size asteroid) -1
   , aLocation = ( aLocation asteroid )
-  , aSpeed = (rand (count * 3), rand (count * 3))  
+  , aSpeed = (rand (count * thrustMaxSpeed * 0.5), rand (count * thrustMaxSpeed * 0.5))  
   , radius = (radius asteroid) / 2
 } : breakAsteroid asteroid  (count -1)
 
