@@ -10,19 +10,19 @@ import Player
 import System.Random
 import Debug.Trace
 ----------Game Updates
+-- | General Update, like projectile collision update single, cooperative modes
 updateGeneralGame :: AsteroidsGame -> AsteroidsGame 
 updateGeneralGame  = projectilesCollision.updateGameBasedOnMode
-                             
 
-
+-- | Update the game upon the game mode
 updateGameBasedOnMode game  | (gameMode game) == Single = SinglePlayer.updateSinglePlayerGame game
                             | (gameMode game) == Cooperative = Cooperative.updateCooperativeGame game
 
-
+-- | Update the asteroids - projectile collision
 projectilesCollision :: AsteroidsGame -> AsteroidsGame
 projectilesCollision game = checkDeadPlayers . updatePlayerCollision (players game) $ game {players = []} 
                          
-
+-- | Update the player - asteroids collision
 updatePlayerCollision :: [Player] -> AsteroidsGame -> AsteroidsGame
 updatePlayerCollision [] game = game
 updatePlayerCollision (p:ps) game = updatePlayerCollision ps $ game { asteroids = (hAsteroids plAstCollision), players = bindPlayers}
@@ -31,9 +31,11 @@ updatePlayerCollision (p:ps) game = updatePlayerCollision ps $ game { asteroids 
                                            plAstCollision = General.updatePlayerAsteroidCollision updateP  (hAsteroids prAstCollision) Holder {hProjectiles = [], hAsteroids = [], noOfCollision = 0, hPlayer = updateP} 
                                            updateP = p {projectiles = (hProjectiles prAstCollision), score = (noOfCollision prAstCollision)*10 + (score p), lives = (lives (hPlayer prAstCollision))}
 
+-- | Return the dead players
 deadPlayers :: AsteroidsGame -> [Player] -> [Player]
 deadPlayers game players = [ player | player <- players, (lives player) <=0] 
 
+-- | Check for dead players
 checkDeadPlayers :: AsteroidsGame -> AsteroidsGame
 checkDeadPlayers game
  | dead == [] = game
@@ -43,12 +45,13 @@ checkDeadPlayers game
  where
   dead = (deadPlayers game (players game))
 
+-- Handle the dead players on the cooperative mode
 cooperativeDeadPlayers :: AsteroidsGame -> [Player] -> AsteroidsGame
 cooperativeDeadPlayers game [x]
  | (length (players game)) > 1 = game{players = removePlayer x (players game)} -- if one player is dead and the another is not
  | otherwise = game{gameMode = GameOver}
---cooperativeDeadPlayers game players = game{gameMode = GameOver}
 
+-- | Remove the player when his lives reach to 0
 removePlayer :: Player -> [Player] -> [Player]
 removePlayer pl (p:ps)
  | pl == p = ps
@@ -82,7 +85,7 @@ updatePlayerAsteroidCollision player (a:as) holder
 
 -- |  split   Asteroid to    tow  part
 breakAsteroid :: Asteroid  -- ^ Asteroid want  split
- ->Float -- ^count  of part
+ ->Float -- ^ count  of part
  ->[Asteroid] -- ^ list  of new Asteroids 
 breakAsteroid  asteroid count 
   |count == 0 ||  (size asteroid)  == 0 =[ ]
@@ -97,6 +100,7 @@ breakAsteroid asteroid  count=asteroid{
                                                 -- 
 
 --------Events Hndling
+-- | Handle the player keys, like thrust rotate, fire, etc
 handleGeneralKeys :: Event -> AsteroidsGame -> AsteroidsGame
 handleGeneralKeys (EventKey (Char 'd') Down _ _) game = game { players = updateRotationStates (players game) (-rotationSpeed) True 1}    -- Rotate the ship Clock-Wise when press 'd'
 handleGeneralKeys (EventKey (Char 'd') Up _ _) game = game { players = updateRotationStates (players game) (-rotationSpeed) False 1}
@@ -117,6 +121,7 @@ handleGeneralKeys _ game = game
 --hazem add key event on spacebar to fire 
 -- u may use this reference: https://hackage.haskell.org/package/gloss-1.11.1.1/docs/Graphics-Gloss-Interface-IO-Game.html
 
+-- Display the basic contents of the general game like the stars, asteroids, etc
 generalRender :: AsteroidsGame -> Picture
 generalRender game 
   |(gameMode game) == Single = 
@@ -150,16 +155,23 @@ generalRender game
    ])
 
    where
-    mkStars :: Int -> Picture
+    -- | Display a random stars
+    mkStars 
+     :: Int -- ^ Number of the stars
+     -> Picture
     mkStars n = pictures
      [
        translate (fst l) (snd l) $ color blue (circleSolid 2) | l <- getVal (randX n) (randY n)
      ]
+
+    -- | Get a random numbers for the stars x-axis
     randX :: Int -> [Float]
     randX n = take n (randomRs ((-(gWidth game)), (gWidth game) :: Float) (mkStdGen n))
+    -- | Get a random numbers for the stars y-axis
     randY :: Int -> [Float]
     randY n = take n (randomRs ((-(gHeight game)), (gHeight game) :: Float) (mkStdGen (n*2)))
 
+    -- | Merge the random nubmers of the stars x-axis and y-axis in a tuple
     getVal :: [Float] -> [Float] -> [(Float,Float)] 
     getVal [] [] = []
     getVal [] _ = []

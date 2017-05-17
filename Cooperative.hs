@@ -7,19 +7,23 @@ import Asteroids
 import Player
 import System.Random
 ----------Game Updates
+-- | Update the cooperative mode
 updateCooperativeGame :: AsteroidsGame -> AsteroidsGame 
 updateCooperativeGame  = updateGamePlayersStates . initializeTwoPlayer
 
+-- | Initialize the game by two player for the cooperative mode
 initializeTwoPlayer :: AsteroidsGame -> AsteroidsGame
 initializeTwoPlayer game | length(players game) < 1 = game{players = initializePlayers 2}
                          | otherwise = game
 
 -- 'Function Composition'
+-- | Update the players and the asteroids
 updateGamePlayersStates :: AsteroidsGame -> AsteroidsGame 
 updateGamePlayersStates game  = game {players = updatePlayers game
                                      ,asteroids = [updateAsteroid asteroid game| asteroid <- updateAsteroidList(asteroids game)] } 
 
 --------Events Hndling
+-- | Handle the player 2 keys, like thrust rotate, fire, etc
 handleCooperativeKeys :: Event -> AsteroidsGame -> AsteroidsGame
 handleCooperativeKeys (EventKey (SpecialKey KeyRight) Down _ _) game = game { players = updateRotationStates  (players game) (-rotationSpeed) True 2}    -- Rotate the ship Clock-Wise when press 'd'
 handleCooperativeKeys (EventKey (SpecialKey KeyRight) Up _ _) game = game { players = updateRotationStates  (players game) (-rotationSpeed) False 2}
@@ -31,6 +35,7 @@ handleCooperativeKeys (EventKey (SpecialKey KeyCtrlR) Down _ _) game = game {pla
 handleCooperativeKeys (EventKey (SpecialKey KeyCtrlR) Up _ _) game = game {players = updateFireStatus (players game) False 2}
 handleCooperativeKeys _ game = game
 
+-- | Display the basic contents of the cooperative mode like the player2 ship, fire, the titles, etc
 coRender :: AsteroidsGame -> Picture
 coRender game = pictures
    ([
@@ -46,7 +51,13 @@ coRender game = pictures
    ])
    
    where
-    mkShip :: Bool -> Color -> (Float, Float) -> Float -> Picture
+    -- | Display the player's ship
+    mkShip 
+     :: Bool -- ^ Indicate whether the ship is thrusting or not
+     -> Color -- ^ The ship color
+     -> (Float, Float) -- ^ The ship location
+     -> Float -- ^ The ship rotaion 
+     -> Picture
     mkShip False col (x,y) degree = pictures
      [
        translate x y $ color white $ solidArc (degree-20) (degree+20) 40,
@@ -59,9 +70,11 @@ coRender game = pictures
        translate x y $ color col $ solidArc (degree-15) (degree+15) 37
      ]
 
+    -- | Display the ship fire
     mkFire :: [Projectile] -> Picture
     mkFire projectiles = pictures [translate (fst (prLocation projectile)) (snd (prLocation projectile)) (color red (circleSolid 5)) | projectile <- projectiles]
 
+    -- | Display some titles like player's score, lives, etc
     mkTitles :: Float -> Float -> Float -> Color -> Int -> Picture
     mkTitles hs s l col 1 = pictures
      [
@@ -78,6 +91,7 @@ coRender game = pictures
       showLives l col 2
      ]
 
+    -- | Display the number of player's lives
     showLives :: Float -> Color -> Int -> Picture
     showLives n col 1 = pictures [scale (0.8) (0.8) (mkShip False col ((-gWidth game)*(0.57) + 70 + x*40,(-gHeight game)*(0.55) + 32) 270) | x <- [1..n] ]
     showLives n col 2 = pictures [scale (0.8) (0.8) (mkShip False col ((gWidth game)*(0.30) + 70 + x*40,(-gHeight game)*(0.55) + 32) 270) | x <- [1..n] ]

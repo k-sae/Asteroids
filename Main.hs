@@ -59,6 +59,7 @@ update seconds game | (gameMode game) == Menu = updateMenu seconds game initialS
 
 --EventKey Key KeyState Modifiers (Float, Float) 
 --ref:: https://hackage.haskell.org/package/gloss-1.11.1.1/docs/Graphics-Gloss-Interface-IO-Game.html
+-- | Handle the key events according to the Game Mode.
 handleKeys :: Event -> AsteroidsGame -> AsteroidsGame
 handleKeys event game
                        | mode == Menu = handleMenuKeys event game          --same as the update function here u call the appropriate key events 
@@ -67,7 +68,7 @@ handleKeys event game
                        | otherwise = handleGeneralKeys event game
                   where mode = gameMode game
 
-
+-- | Render the game according to the Game Mode.
 render :: AsteroidsGame  --- update the render like the update function in order to behave like the update function
        -> Picture   --TODO BELBEL splite render function to different files for better organization
 render game 
