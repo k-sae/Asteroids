@@ -126,14 +126,14 @@ updateProjectiles player = player { projectiles = updateProjectilesCount [update
 updateProjectilesCount :: [Projectile] -> Player -> [Projectile]
 updateProjectilesCount projectiles player 
                                          | (isFiring player) == False = projectiles
-                                         | (firingSpeed player) `mod` 5==0 = initializeProjectile player : projectiles
+                                         | (firingSpeed player) `mod` 15 ==0 = initializeProjectile player : projectiles
                                          | otherwise = projectiles
 
 initializeProjectile :: Player -> Projectile
 initializeProjectile player = Projectile
                               {
                                  prLocation = (plLocation player)
-                                ,prSpeed = (cos (degToRad ((degree player) - 180)),(sin (degToRad ((degree player) - 180))))
+                                ,prSpeed = ((cos (degToRad ((degree player) - 180))) * 3,(sin (degToRad ((degree player) - 180))) * 3)
                                 ,prLifeTime = 1000
                               }
 
