@@ -69,7 +69,7 @@ updatePlayerAsteroidCollision player (a:as) holder
                                                   | distance (aLocation a) playerLocation <= (radius a) = General.updatePlayerAsteroidCollision player as holder { hPlayer = updateCollidedPlayer (hPlayer holder)}  
                                                   | otherwise =   General.updatePlayerAsteroidCollision player as holder {hAsteroids =  a : (hAsteroids holder)} 
                             where playerLocation = (plLocation (hPlayer holder))
-                                  updateCollidedPlayer player = player { lives = (lives player) - 1} 
+                                  updateCollidedPlayer player = player { plLocation = (0,0), plSpeed = (0,0), lives = (lives player) - 1} 
 
 
 
