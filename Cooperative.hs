@@ -31,8 +31,8 @@ handleCooperativeKeys (EventKey (SpecialKey KeyLeft) Down _ _) game = game { pla
 handleCooperativeKeys (EventKey (SpecialKey KeyLeft) Up _ _) game = game { players = updateRotationStates  (players game) (rotationSpeed) False 2}
 handleCooperativeKeys (EventKey (SpecialKey KeyUp) Down _ _) game = game {players = updateThrustStatus (players game) True 2}
 handleCooperativeKeys (EventKey (SpecialKey KeyUp) Up _ _) game = game {players = updateThrustStatus (players game) False 2}
-handleCooperativeKeys (EventKey (SpecialKey KeyCtrlR) Down _ _) game = game {players = updateFireStatus (players game) True 2}
-handleCooperativeKeys (EventKey (SpecialKey KeyCtrlR) Up _ _) game = game {players = updateFireStatus (players game) False 2}
+handleCooperativeKeys (EventKey  (Char 'k') Down _ _) game = game {players = updateFireStatus (players game) True 2}
+handleCooperativeKeys (EventKey  (Char 'k') Up _ _) game = game {players = updateFireStatus (players game) False 2}
 handleCooperativeKeys _ game = game
 
 -- | Display the basic contents of the cooperative mode like the player2 ship, fire, the titles, etc
