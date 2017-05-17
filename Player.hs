@@ -157,7 +157,7 @@ updateProjectilesCount :: [Projectile] -- ^ list of projectiles
  -> [Projectile] -- ^ list of projectiles 
 updateProjectilesCount projectiles player 
                                          | (isFiring player) == False = projectiles
-                                         | (firingSpeed player) `mod` 15 ==0 = initializeProjectile player : projectiles
+                                         | (firingSpeed player) `mod` fireDelay ==0 = initializeProjectile player : projectiles
                                          | otherwise = projectiles
 
 -- | make a new projectile 
@@ -166,8 +166,8 @@ initializeProjectile :: Player -- ^  current player
 initializeProjectile player = Projectile
                               {
                                  prLocation = (plLocation player)
-                                ,prSpeed = ((cos (degToRad ((degree player) - 180))) * 3,(sin (degToRad ((degree player) - 180))) * 3)
-                                ,prLifeTime = 600
+                                ,prSpeed = ((cos (degToRad ((degree player) - 180))) * thrustMaxSpeed * 0.5,(sin (degToRad ((degree player) - 180))) * thrustMaxSpeed * 0.5)
+                                ,prLifeTime = projectileLife
                               }
 
 -- | change location of projectile  and decrease  life time 

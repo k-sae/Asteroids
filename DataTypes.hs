@@ -2,20 +2,24 @@ module DataTypes where
 import Graphics.Gloss
 
 -------------------- the custom datatypes --  TODO :: decide if we should use deriving Show 
-width, height, offset :: Int
+width, height, offset, fireDelay, projectileLife :: Int
 width = 1000
 height = 700
 offset = 100
+fireDelay = 15
+projectileLife = 400
+
       -- the thrust will speed up till reach max value
 awidth ,aheight :: Float 
 awidth =  fromIntegral ((width `div` 2)-10)
 aheight = fromIntegral (height `div` 2)
 rotationSpeed, accelerateSpeed, thrustMaxSpeed, asteroidMaxSpeed, asteroidNo :: Float
-rotationSpeed = 3.5
-accelerateSpeed = 0.3
-thrustMaxSpeed = 10 
-asteroidMaxSpeed = 6
+rotationSpeed = 3.0
+accelerateSpeed = 0.2
+thrustMaxSpeed = 6 
+asteroidMaxSpeed = 4
 asteroidNo = 3
+
 
 data Player = Player 
     { pID :: Int
