@@ -4,7 +4,9 @@ import Graphics.Gloss
 import Graphics.Gloss.Interface.Pure.Game
 -- | Update the mainmenu screen.
 updateMenu :: Float -> AsteroidsGame -> AsteroidsGame -> AsteroidsGame 
-updateMenu seconds game initial = initial{gWidth = (gWidth game), gHeight = (gHeight game)}
+updateMenu seconds game initial = initial{gWidth = (gWidth game), gHeight = (gHeight game), players = newp}
+ where
+  newp = [((players initial) !! 0){highScore = (highScore ((players game) !! 0))}] 
 
 -- | Handle the key events on the mainmenu like enter the single player mode, etc.
 handleMenuKeys :: Event -> AsteroidsGame -> AsteroidsGame

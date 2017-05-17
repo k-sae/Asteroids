@@ -29,7 +29,9 @@ updatePlayerCollision (p:ps) game = updatePlayerCollision ps $ game { asteroids 
                                      where prAstCollision = projectilesCollisionTraverser (projectiles (p)) Holder{hProjectiles = [], hAsteroids = (asteroids game), noOfCollision = 0, hPlayer = p}
                                            bindPlayers = (players game) ++ [(hPlayer plAstCollision)]
                                            plAstCollision = General.updatePlayerAsteroidCollision updateP  (hAsteroids prAstCollision) Holder {hProjectiles = [], hAsteroids = [], noOfCollision = 0, hPlayer = updateP} 
-                                           updateP = p {projectiles = (hProjectiles prAstCollision), score = (noOfCollision prAstCollision)*10 + (score p), lives = (lives (hPlayer prAstCollision))}
+                                           updateP = p {projectiles = (hProjectiles prAstCollision), score = (noOfCollision prAstCollision)*10 + (score p), highScore = newHs, lives = (lives (hPlayer prAstCollision))}
+                                           newHs | (score p) > (highScore p) = (score p)
+                                                 | otherwise = (highScore p)
 
 -- | Return the dead players
 deadPlayers :: AsteroidsGame -> [Player] -> [Player]
@@ -47,14 +49,13 @@ checkDeadPlayers game
 
 -- Handle the dead players on the cooperative mode
 cooperativeDeadPlayers :: AsteroidsGame -> [Player] -> AsteroidsGame
-cooperativeDeadPlayers game [x]
- | (length (players game)) > 1 = game{players = removePlayer x (players game)} -- if one player is dead and the another is not
- | otherwise = game{gameMode = GameOver}
+cooperativeDeadPlayers game [x] = game{players = removePlayer x (players game)} -- if one player is dead and the another is not
+cooperativeDeadPlayers game dead = game{gameMode = GameOver}
 
 -- | Remove the player when his lives reach to 0
 removePlayer :: Player -> [Player] -> [Player]
 removePlayer pl (p:ps)
- | pl == p = ps
+ | pl == p = pl{isDead = True} : ps
  | otherwise = p : removePlayer pl ps 
 
 -- | traverse projectiles to check for collided Objects

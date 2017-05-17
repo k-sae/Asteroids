@@ -32,7 +32,7 @@ main = play window background fps initialState render handleKeys update
 -- | initialize the states of the game
 initialState :: AsteroidsGame -- ^ initialized game
 initialState    = Game
-   { players    = []  
+   { players    = initializePlayers 1
     , gameMode  = Menu
     , gWidth    = (fromIntegral width)
     , gHeight   = (fromIntegral height)

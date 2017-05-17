@@ -23,6 +23,7 @@ initializePlayers 1 = [Player                  -- idk how this worked but it did
     , score       = 0
     , highScore   = 0
     , lives       = 3
+    , isDead = False
     }]
     
 initializePlayers 2 = [Player                  -- idk how this worked but it did :D 
@@ -41,6 +42,7 @@ initializePlayers 2 = [Player                  -- idk how this worked but it did
     , score       = 0
     , highScore   = 0
     , lives       = 3
+    , isDead = False
     },
     Player                  -- idk how this worked but it did :D 
     { pID = 2
@@ -58,6 +60,25 @@ initializePlayers 2 = [Player                  -- idk how this worked but it did
     , score       = 0
     , highScore   = 0
     , lives       = 3
+    , isDead = False
+    }]
+initializePlayers 3 = [Player
+    { pID = 2
+    , projectiles = []
+    , degree      = 0
+    , plSpeed     = (0,0)
+    , plLocation  = (200,0)
+    , rotatingBy  = rotationSpeed
+    , firingSpeed = 10
+    , isrotating  = False
+    , isFiring    = False
+    , firemode    = 1
+    , plColor     = (makeColorI 51 222 10 255)
+    , isThrusting = False
+    , score       = 0
+    , highScore   = 0
+    , lives       = 3
+    , isDead = False
     }]
 
 --The x value will be the rotatingBy value!

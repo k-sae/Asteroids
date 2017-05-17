@@ -37,6 +37,7 @@ data Player = Player
     , score :: Float                    -- ^ player score
     , highScore :: Float                -- ^ player highest score
     , lives :: Float                    -- ^ remaining lives
+    , isDead :: Bool
     } deriving (Eq)
 
 -- | projectile data type
