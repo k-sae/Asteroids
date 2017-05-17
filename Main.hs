@@ -49,7 +49,7 @@ initialState    = Game
 update :: Float -- ^ example 3
  -> AsteroidsGame -- ^ example 3
  -> AsteroidsGame -- ^ example 3                      
-update seconds game | (gameMode game) == Menu = updateMenu seconds initialState  -- call the update menue from MainMenu.hs file
+update seconds game | (gameMode game) == Menu = updateMenu seconds game initialState
                     | (gameMode game) == Pause = updatePause seconds game
                     | (gameMode game) == GameOver = updateGameOver seconds game
                     | otherwise = General.updateGeneralGame game
