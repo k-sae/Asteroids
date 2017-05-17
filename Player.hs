@@ -60,41 +60,66 @@ initializePlayers 2 = [Player                  -- idk how this worked but it did
     }]
 
 --The x value will be the rotatingBy value!
-updateRotationStates :: Float -> Bool -> [Player] -> Int -> [Player] 
+updateRotationStates :: Float 
+ -> Bool 
+ -> [Player] 
+ -> Int 
+ -> [Player] 
 updateRotationStates x rotationState players index = updateRotationStatesHelper index 0 players rotationState x
 
 --handle player interaction according to its index
-updateRotationStatesHelper ::  Int -> Int -> [Player] -> Bool -> Float-> [Player]
+updateRotationStatesHelper ::  Int 
+ -> Int 
+ -> [Player] 
+ -> Bool 
+ -> Float
+ -> [Player]
 updateRotationStatesHelper _ _ [] _ _ = [] 
 updateRotationStatesHelper playerIndex startCount (p:players) rotationState x
                                                                            | startCount == playerIndex = p {isrotating = rotationState , rotatingBy = x}:updateRotationStatesHelper playerIndex (startCount+1) players rotationState x
                                                                            | otherwise = p:updateRotationStatesHelper playerIndex (startCount+1) players rotationState x
-updateThrustStatus :: [Player] -> Bool -> Int -> Int -> [Player]
+updateThrustStatus :: [Player] 
+ -> Bool 
+ -> Int 
+ -> Int 
+ -> [Player]
 updateThrustStatus [] _ _ _ = []
 updateThrustStatus (p:players) state index startIndex 
                                                    | startIndex == index = p { isThrusting = state} : updateThrustStatus players state index (startIndex+1) 
                                                    | otherwise = p : updateThrustStatus players state index (startIndex+1) 
 
-updateFireStatus :: [Player] -> Bool -> Int -> Int ->[Player]
+updateFireStatus :: [Player] 
+ -> Bool 
+ -> Int 
+ -> Int 
+ ->[Player]
 updateFireStatus [] _ _ _ = []
 updateFireStatus (p:players) status index startIndex 
                                                    |startIndex == index = p { isFiring = status} : updateFireStatus players status index (startIndex+1) 
                                                    |otherwise = p : updateFireStatus players status index (startIndex+1) 
 
-
-updatePlayers :: AsteroidsGame -> [Player] -- sry for doing this but its working :) 
+-- sry for doing this but its working :)
+-- | update player projectiles && speed && rrotation && speed  && location
+updatePlayers :: AsteroidsGame -- ^ current game 
+ -> [Player] -- ^ updated list of players                                            
 updatePlayers game = [(updateProjectiles game .updateSpeed.rotateBy.updateLocationBy game) x|x <- (players game)]
 
-rotateBy :: Player -> Player 
+-- | update degree of player during rotatation
+rotateBy :: Player -- ^ current player
+ -> Player -- ^ updated  player with new degree
 rotateBy player |(isrotating player) == True =  player {degree = newdegree}
                 | otherwise = player
  where newdegree = (rotatingBy player) + (degree player)
 
-updateLocationBy :: AsteroidsGame -> Player -> Player
+--| update player location  in x and  y
+updteLocationBy :: AsteroidsGame -- ^ current game 
+ -> Player --^ current player 
+ -> Player --^ updated player location
 updateLocationBy game player = player {plLocation = newLocation (plLocation player)}
                        where newLocation (x,y) = (verifyXLocation game (x + xvelocity (plSpeed player)),verifyYLocation game (y + yvelocity (plSpeed player)))
                              xvelocity (x,_) = x
                              yvelocity (_,y) = y
+
 -- |  check  if   location x  equal  max width  return -x  
 verifyXLocation :: AsteroidsGame  -- ^current  game
  -> Float -- ^ current  x location 
@@ -103,19 +128,20 @@ verifyXLocation game x
                  | abs x >= a/2= -x
                  | otherwise = x
                    where a = (gWidth game)
+
 -- |  check  if   location y  equal max hight  return -y
 verifyYLocation :: AsteroidsGame  -- ^current  game
-  -> Float  -- ^ current  y location 
+ -> Float  -- ^ current  y location 
  -> Float -- ^  new  y location
-
 verifyYLocation game x 
                  | abs x >= a/2= -x
                  | otherwise = x
                    where a = (gHeight game)
 
 
-
-updateSpeed :: Player -> Player
+-- | update player speed 
+updateSpeed :: Player  --^ current player
+ -> Player --^ current player with new speed
 updateSpeed player | isThrusting player == True = player{plSpeed = newSpeed (plSpeed player)}
                    | otherwise = player -- EPIC Equation
             where newSpeed (x,y) = (check (x + (cos (degToRad ((degree player) - 180))) * accelerateSpeed),check (y + (sin (degToRad ((degree player)-180))) * accelerateSpeed))
@@ -126,11 +152,12 @@ updateSpeed player | isThrusting player == True = player{plSpeed = newSpeed (plS
 
 
 -- | add prjoectiles to player 
-updateProjectiles :: AsteroidsGame 
+updateProjectiles :: AsteroidsGame -- ^current  game
  -> Player -- ^ current player
  -> Player -- ^  player with projectiles updated
 updateProjectiles game  player= player { projectiles = updateProjectilesCount [updateProjectile game projectile player| projectile <- (projectiles player),(prLifeTime projectile) > 0] player,
                                    firingSpeed = (firingSpeed player) + 1}
+
 -- | check projectile before adding to player
 updateProjectilesCount :: [Projectile] -- ^ list of projectiles
  -> Player  -- ^ current player
@@ -139,6 +166,7 @@ updateProjectilesCount projectiles player
                                          | (isFiring player) == False = projectiles
                                          | (firingSpeed player) `mod` 15 ==0 = initializeProjectile player : projectiles
                                          | otherwise = projectiles
+
 -- | make a new projectile 
 initializeProjectile :: Player -- ^  current player
  -> Projectile -- ^ inilized  projectile 
@@ -150,7 +178,7 @@ initializeProjectile player = Projectile
                               }
 
 -- | change location of projectile  and decrease  life time 
-updateProjectile :: AsteroidsGame  
+updateProjectile :: AsteroidsGame -- ^current  game 
  ->  Projectile  -- ^ all projectile 
  -> Player       -- ^ current player
  -> Projectile   -- ^ updated  projectile
