@@ -14,7 +14,7 @@ import  Player
 updateAsteroid :: Asteroid -> AsteroidsGame-> Asteroid --khaled edit this to fit the req
 updateAsteroid asteroid  game = asteroid { aLocation = newLocation (aLocation asteroid)}
                                  where newLocation (x,y) = (verifyXLocation game (x + (fst (aSpeed asteroid))),verifyYLocation game (y +(snd (aSpeed asteroid))))
---  |    return  random  value  with rang  x -x                              
+-- |    return  random  value  with rang  x -x                              
 rand:: Float->Float
 rand x = unsafePerformIO (getStdRandom (randomR (-x, x)))
 
@@ -37,7 +37,7 @@ renderAsteroid game = pictures
 updateAsteroidList :: [Asteroid]->[Asteroid]
 updateAsteroidList [ ] =initializeAsteroids asteroidNo
 updateAsteroidList asteroids =asteroids
---  | make  Asteroid iinitialize
+-- | make  Asteroid iinitialize
 initializeAsteroids  :: Float-> [Asteroid]
 initializeAsteroids 0 = []
 initializeAsteroids count =   Asteroid                  -- idk how this worked but it did :D 
