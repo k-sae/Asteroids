@@ -26,7 +26,7 @@ projectilesCollision game = checkDeadPlayers . updatePlayerCollision (players ga
 updatePlayerCollision :: [Player] -> AsteroidsGame -> AsteroidsGame
 updatePlayerCollision [] game = game
 updatePlayerCollision (p:ps) game = updatePlayerCollision ps $ game { asteroids = (hAsteroids plAstCollision), players = bindPlayers}
-                                     where prAstCollision = projectilesCollisionHelper (projectiles (p)) Holder{hProjectiles = [], hAsteroids = (asteroids game), noOfCollision = 0, hPlayer = p}
+                                     where prAstCollision = projectilesCollisionTraverser (projectiles (p)) Holder{hProjectiles = [], hAsteroids = (asteroids game), noOfCollision = 0, hPlayer = p}
                                            bindPlayers = (players game) ++ [(hPlayer plAstCollision)]
                                            plAstCollision = General.updatePlayerAsteroidCollision updateP  (hAsteroids prAstCollision) Holder {hProjectiles = [], hAsteroids = [], noOfCollision = 0, hPlayer = updateP} 
                                            updateP = p {projectiles = (hProjectiles prAstCollision), score = (noOfCollision prAstCollision)*10 + (score p), lives = (lives (hPlayer prAstCollision))}
@@ -57,21 +57,35 @@ removePlayer pl (p:ps)
  | pl == p = ps
  | otherwise = p : removePlayer pl ps 
 
-projectilesCollisionHelper ::  [Projectile] -> Holder  -> Holder
-projectilesCollisionHelper [] holder = holder
-projectilesCollisionHelper  (pr:prs) holder = projectilesCollisionHelper prs $ holder {hProjectiles = (hProjectiles holder) ++ (hProjectiles prCollision), hAsteroids = (hAsteroids prCollision), noOfCollision = (noOfCollision holder) + (noOfCollision prCollision)}
-                                              where prCollision =  projectilesCollisionHelper2 Holder{hProjectiles = [], hAsteroids = [], noOfCollision = 0, hPlayer = (hPlayer holder)} pr (hAsteroids holder) False
+-- | traverse projectiles to check for collided Objects
+projectilesCollisionTraverser ::  [Projectile] -- ^ list of projectiles
+ -> Holder -- ^ Empty holder 
+ -> Holder -- ^ holds updated game state for analyizing
+projectilesCollisionTraverser [] holder = holder
+projectilesCollisionTraverser  (pr:prs) holder = projectilesCollisionTraverser prs $ holder {hProjectiles = (hProjectiles holder) ++ (hProjectiles prCollision), hAsteroids = (hAsteroids prCollision), noOfCollision = (noOfCollision holder) + (noOfCollision prCollision)}
+                                              where prCollision =  asteroidsCollisionTraverser Holder{hProjectiles = [], hAsteroids = [], noOfCollision = 0, hPlayer = (hPlayer holder)} pr (hAsteroids holder) False
 
-projectilesCollisionHelper2 :: Holder -> Projectile -> [Asteroid] -> Bool -> Holder
-projectilesCollisionHelper2 holder _ [] True = holder
-projectilesCollisionHelper2 holder projectile [] False = holder{ hProjectiles = projectile : (hProjectiles holder)}
+-- | traverse asteroids to check for collided Objects
+asteroidsCollisionTraverser :: Holder -- ^ Empty holder 
+ -> Projectile -- ^ projectile 
+ -> [Asteroid] -- ^ list asteroids that the function will traverse through
+ -> Bool -- ^ check if collsion occured through the whole traverse
+ -> Holder -- ^ return updated asteroids and projectiles
+asteroidsCollisionTraverser holder _ [] True = holder
+asteroidsCollisionTraverser holder projectile [] False = holder{ hProjectiles = projectile : (hProjectiles holder)}
 -- 2 possible issues up here
 --update: i have choosen to ignore them as the fault value will neglictable (nearly 2px)
-projectilesCollisionHelper2 holder projectile (a:as) collided
-                                                    | distance (aLocation a) (prLocation projectile) <= (radius a) = projectilesCollisionHelper2 holder {hAsteroids =  (hAsteroids holder) ++ breakAsteroid a 2, noOfCollision = (noOfCollision holder) + 1}  projectile as True
-                                                    | otherwise = projectilesCollisionHelper2 holder {hAsteroids =  a : (hAsteroids holder)}  projectile as collided
-
-distance :: (Float, Float) -> (Float, Float) -> Float
+asteroidsCollisionTraverser holder projectile (a:as) collided
+                                                    | distance (aLocation a) (prLocation projectile) <= (radius a) = asteroidsCollisionTraverser holder {hAsteroids =  (hAsteroids holder) ++ breakAsteroid a 2, noOfCollision = (noOfCollision holder) + 1}  projectile as True
+                                                    | otherwise = asteroidsCollisionTraverser holder {hAsteroids =  a : (hAsteroids holder)}  projectile as collided
+-- | calculate distance between two object using 2d location
+--
+-- Example: 
+-- >>> distance (0,0) (15,30)
+-- 33.54102
+distance :: (Float, Float) -- ^ location 1
+ -> (Float, Float) -- ^ location 2
+  -> Float -- ^ distance
 distance (x1,y1) (x2,y2) =  sqrt ((x1 - x2)^2 + (y1 - y2)^2)
 updatePlayerAsteroidCollision:: Player -> [Asteroid] -> Holder -> Holder
 updatePlayerAsteroidCollision _ [] holder = holder
