@@ -63,10 +63,10 @@ breakAsteroid  asteroid count
   |count == 0 ||  (size asteroid)  == 0 =[ ]
 breakAsteroid asteroid  count=asteroid{
   size = (size asteroid) -1
-  , aLocation = ( fst (aLocation asteroid), snd (aLocation asteroid) )
-  , aSpeed = (randX count, randY count) 
+  , aLocation = ( aLocation asteroid )
+  , aSpeed = (randX (count * 3), randY (count * 3))  
   , radius = (radius asteroid) / 2
-} :  breakAsteroid asteroid  (count -1)
+} : breakAsteroid asteroid  (count -1)
 
 --distance ast = sqrt (( fst (prLocation projectile) - fst (aLocation ast))^2 + ( snd (prLocation projectile) - snd (aLocation ast))^2)
                                                 -- 

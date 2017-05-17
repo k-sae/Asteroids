@@ -10,10 +10,12 @@ offset = 100
 awidth ,aheight :: Float 
 awidth =  fromIntegral ((width `div` 2)-10)
 aheight = fromIntegral (height `div` 2)
-rotationSpeed, accelerateSpeed, thrustMaxSpeed :: Float
-rotationSpeed = 4
+rotationSpeed, accelerateSpeed, thrustMaxSpeed, asteroidMaxSpeed, asteroidNo :: Float
+rotationSpeed = 3.5
 accelerateSpeed = 0.3
 thrustMaxSpeed = 10 
+asteroidMaxSpeed = 6
+asteroidNo = 3
 
 data Player = Player 
     { pID :: Int
