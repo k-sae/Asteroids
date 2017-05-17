@@ -11,7 +11,10 @@ import  Player
 -- LASTLY NEVER EVER DELETE COMMENTS
 --  u can delete some code u r free to  do it  :D
 -- |     traversing asteroid
-updateAsteroid :: Asteroid -> AsteroidsGame-> Asteroid --khaled edit this to fit the req
+
+updateAsteroid :: Asteroid -- ^  Asteroid need update  
+ -> AsteroidsGame -- ^ current Game
+ -> Asteroid   -- ^ return astroid after   update
 updateAsteroid asteroid  game = asteroid { aLocation = newLocation (aLocation asteroid)}
                                  where newLocation (x,y) = (verifyXLocation game (x + (fst (aSpeed asteroid))),verifyYLocation game (y +(snd (aSpeed asteroid))))
 -- |    return  random  value  with rang  x -x                              
@@ -21,7 +24,8 @@ rand x = unsafePerformIO (getStdRandom (randomR (-x, x)))
 
 
 -- |  render Asteroid
-renderAsteroid :: AsteroidsGame -> Picture
+renderAsteroid :: AsteroidsGame  -- ^  current game
+  -> Picture -- ^ new  picture
 renderAsteroid game = pictures
   [
     mkAst (radius asteroid) (aLocation asteroid) | asteroid <- (asteroids game)
@@ -34,11 +38,13 @@ renderAsteroid game = pictures
      ]
 
 -- | check if  Asteriod died  initialize Asteroid again 
-updateAsteroidList :: [Asteroid]->[Asteroid]
+updateAsteroidList :: [Asteroid] -- ^ current  Asteroid 
+ ->[Asteroid] -- ^ update Asteroid
 updateAsteroidList [ ] =initializeAsteroids asteroidNo
 updateAsteroidList asteroids =asteroids
 -- | make  Asteroid iinitialize
-initializeAsteroids  :: Float-> [Asteroid]
+initializeAsteroids  :: Float -- ^ Asteroid count
+ -> [Asteroid] -- ^ Asteroid after  initialize 
 initializeAsteroids 0 = []
 initializeAsteroids count =   Asteroid                  -- idk how this worked but it did :D 
     { size = 2
