@@ -80,8 +80,10 @@ updatePlayerAsteroidCollision player (a:as) holder
 
 
 
-
-breakAsteroid :: Asteroid ->Float->[Asteroid] 
+-- |  split   Asteroid to    tow  part
+breakAsteroid :: Asteroid  -- ^ Asteroid want  split
+ ->Float -- ^count  of part
+ ->[Asteroid] -- ^ list  of new Asteroids 
 breakAsteroid  asteroid count 
   |count == 0 ||  (size asteroid)  == 0 =[ ]
 breakAsteroid asteroid  count=asteroid{
