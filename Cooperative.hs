@@ -78,14 +78,14 @@ coRender game = pictures
     mkTitles :: Float -> Float -> Float -> Color -> Int -> Picture
     mkTitles hs s l col 1 = pictures
      [
-      scale (0.2) (0.2) (translate (-(gWidth game*2.3)) (gHeight game*2.2) $ color white (text ("High Score: " ++ show (hs)))),
+      --scale (0.2) (0.2) (translate (-(gWidth game*2.3)) (gHeight game*2.2) $ color white (text ("High Score: " ++ show (hs)))),
       scale (0.2) (0.2) (translate (-(gWidth game*2.3)) (gHeight game*2) $ color white (text ("Score: " ++ show (s)))),
       scale (0.2) (0.2) (translate (-(gWidth game*2.3)) (-(gHeight game*2.2)) $ color white (text "Lives: " )),
       showLives l col 1
      ]
     mkTitles hs s l col 2 = pictures
      [
-      scale (0.2) (0.2) (translate ((gWidth game*1.2)) (gHeight game*2.2) $ color white (text ("High Score: " ++ show (hs)))),
+      --scale (0.2) (0.2) (translate ((gWidth game*1.2)) (gHeight game*2.2) $ color white (text ("High Score: " ++ show (hs)))),
       scale (0.2) (0.2) (translate ((gWidth game*1.2)) (gHeight game*2) $ color white (text ("Score: " ++ show (s)))),
       scale (0.2) (0.2) (translate ((gWidth game*1.2)) (-(gHeight game*2.2)) $ color white (text "Lives: " )),
       showLives l col 2
