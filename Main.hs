@@ -39,7 +39,12 @@ initialState    = Game
    }
 
 
--- | update the game according to the Game Mode
+-- | update the game according to the Game Mode.
+--
+-- sample output: 
+--
+-- >>> update args1 args2
+-- result
 update :: Float -- ^ example 3
  -> AsteroidsGame -- ^ example 3
  -> AsteroidsGame -- ^ example 3                      
