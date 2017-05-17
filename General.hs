@@ -98,10 +98,10 @@ breakAsteroid asteroid  count=asteroid{
 
 --------Events Hndling
 handleGeneralKeys :: Event -> AsteroidsGame -> AsteroidsGame
-handleGeneralKeys (EventKey (Char 'd') Down _ _) game = game { players = updateRotationStates (-rotationSpeed) True (players game) 1}    -- Rotate the ship Clock-Wise when press 'd'
-handleGeneralKeys (EventKey (Char 'd') Up _ _) game = game { players = updateRotationStates (-rotationSpeed) False (players game) 1}
-handleGeneralKeys (EventKey (Char 'a') Down _ _) game = game { players = updateRotationStates (rotationSpeed) True (players game) 1}   -- Rotate the ship Anti_Clock-Wise when press 'a'
-handleGeneralKeys (EventKey (Char 'a') Up _ _) game = game { players = updateRotationStates (rotationSpeed) False (players game) 1}
+handleGeneralKeys (EventKey (Char 'd') Down _ _) game = game { players = updateRotationStates (players game) (-rotationSpeed) True 1}    -- Rotate the ship Clock-Wise when press 'd'
+handleGeneralKeys (EventKey (Char 'd') Up _ _) game = game { players = updateRotationStates (players game) (-rotationSpeed) False 1}
+handleGeneralKeys (EventKey (Char 'a') Down _ _) game = game { players = updateRotationStates (players game) (rotationSpeed) True 1}   -- Rotate the ship Anti_Clock-Wise when press 'a'
+handleGeneralKeys (EventKey (Char 'a') Up _ _) game = game { players = updateRotationStates (players game) (rotationSpeed) False 1}
 handleGeneralKeys (EventKey (Char 'p') Down _ _) game = game {gameMode = Pause}   -- Pause the game when press 'p'
 handleGeneralKeys (EventKey (Char 'q') Down _ _) game = game {gameMode = Menu}   -- Return to the menu and quit the game when press 'q'
 handleGeneralKeys (EventKey (Char 'w') Down _ _) game = game {players = updateThrustStatus (players game) True 1}

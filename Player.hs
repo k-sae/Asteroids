@@ -60,24 +60,16 @@ initializePlayers 2 = [Player                  -- idk how this worked but it did
     }]
 
 --The x value will be the rotatingBy value!
-updateRotationStates :: Float 
- -> Bool 
- -> [Player] 
- -> Int 
- -> [Player] 
-updateRotationStates x rotationState players index = updateRotationStatesHelper index players rotationState x
-
---handle player interaction according to its index
--- | 
-updateRotationStatesHelper ::  Int 
- -> [Player] 
- -> Bool 
- -> Float
- -> [Player]
-updateRotationStatesHelper _ [] _ _ = [] 
-updateRotationStatesHelper playerIndex (p:players) rotationState x
-                                                                  | (pID p) == playerIndex = p {isrotating = rotationState , rotatingBy = x}:updateRotationStatesHelper playerIndex players rotationState x
-                                                                  | otherwise = p:updateRotationStatesHelper playerIndex players rotationState x
+-- | update Rotation status
+updateRotationStates :: [Player] -- ^ list of players
+ ->Float-- ^ rotation speed
+ -> Bool -- ^ status
+ -> Int -- ^ playerIndex
+ -> [Player] -- ^ list of players with updated player
+updateRotationStates [] _ _ _  = []
+updateRotationStates (p:players) x state  index  
+                                          | (pID p) == index = p { isrotating = state,rotatingBy= x} : updateRotationStates players x state index 
+                                          | otherwise = p : updateRotationStates players x state  index 
 
 -- | update thrust status
 updateThrustStatus :: [Player] -- ^ list of players
@@ -88,6 +80,7 @@ updateThrustStatus [] _ _  = []
 updateThrustStatus (p:players) state index 
                                           | (pID p) == index = p { isThrusting = state} : updateThrustStatus players state index
                                           | otherwise = p : updateThrustStatus players state index
+
 -- | update firestatus for player 
 updateFireStatus :: [Player] -- ^ list of players
  -> Bool -- ^ status
