@@ -120,21 +120,21 @@ updateSpeed player | isThrusting player == True = player{plSpeed = newSpeed (plS
 
 -- | add prjoectiles to player 
 updateProjectiles :: AsteroidsGame 
- -> Player
- -> Player
+ -> Player -- ^ current player
+ -> Player -- ^  player with projectiles updated
 updateProjectiles game  player= player { projectiles = updateProjectilesCount [updateProjectile game projectile player| projectile <- (projectiles player),(prLifeTime projectile) > 0] player,
                                    firingSpeed = (firingSpeed player) + 1}
 -- | check projectile before adding to player
-updateProjectilesCount :: [Projectile] 
- -> Player 
- -> [Projectile]
+updateProjectilesCount :: [Projectile] -- ^ list of projectiles
+ -> Player  -- ^ current player
+ -> [Projectile] -- ^ list of projectiles 
 updateProjectilesCount projectiles player 
                                          | (isFiring player) == False = projectiles
                                          | (firingSpeed player) `mod` 15 ==0 = initializeProjectile player : projectiles
                                          | otherwise = projectiles
 -- | make a new projectile 
-initializeProjectile :: Player 
- -> Projectile
+initializeProjectile :: Player -- ^  current player
+ -> Projectile -- ^ inilized  projectile 
 initializeProjectile player = Projectile
                               {
                                  prLocation = (plLocation player)
@@ -143,10 +143,10 @@ initializeProjectile player = Projectile
                               }
 
 -- | change location of projectile  and decrease  life time 
-updateProjectile :: AsteroidsGame
- ->  Projectile 
- -> Player 
- -> Projectile
+updateProjectile :: AsteroidsGame  
+ ->  Projectile  -- ^ all projectile 
+ -> Player       -- ^ current player
+ -> Projectile   -- ^ updated  projectile
 updateProjectile  game projectile player = projectile {  prLocation = newProjectileLocation
                                                  , prLifeTime = prLifeTime projectile - 10 
                                                 }
