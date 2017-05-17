@@ -4,35 +4,23 @@ import Graphics.Gloss
 import DataTypes
 import System.Random
 import System.IO.Unsafe
-
+import  Player
 -- asteroids in seperate file bec many modes will depend on 
 -- and it will have constant behavior and may be not its up to khaled to decide
 -- import this file whenever u want to call one of its functions
 -- LASTLY NEVER EVER DELETE COMMENTS
 --  u can delete some code u r free to  do it  :D
-
+-- |     traversing asteroid
 updateAsteroid :: Asteroid -> AsteroidsGame-> Asteroid --khaled edit this to fit the req
 updateAsteroid asteroid  game = asteroid { aLocation = newLocation (aLocation asteroid)}
                                  where newLocation (x,y) = (verifyXLocation game (x + (fst (aSpeed asteroid))),verifyYLocation game (y +(snd (aSpeed asteroid))))
-                                    
-verifyXLocation :: AsteroidsGame -> Float -> Float
-verifyXLocation game x 
-                 | abs x >= a/2= -x
-                 | otherwise = x
-                   where a = (gWidth game)
-
-verifyYLocation :: AsteroidsGame -> Float -> Float
-verifyYLocation game x 
-                 | abs x >= a/2= -x
-                 | otherwise = x
-                   where a = (gHeight game)
-randX :: Float->Float
-randX x = unsafePerformIO (getStdRandom (randomR (-x, x)))
-
-randY :: Float ->Float
-randY y = unsafePerformIO (getStdRandom (randomR (-y, y)))
+--  |    return  random  value  with rang  x -x                              
+rand:: Float->Float
+rand x = unsafePerformIO (getStdRandom (randomR (-x, x)))
 
 
+
+-- |  render Asteroid
 renderAsteroid :: AsteroidsGame -> Picture
 renderAsteroid game = pictures
   [
@@ -45,15 +33,16 @@ renderAsteroid game = pictures
        (translate x y $ color (greyN 0.2) (circleSolid r))
      ]
 
+-- | check if  Asteriod died  initialize Asteroid again 
 updateAsteroidList :: [Asteroid]->[Asteroid]
 updateAsteroidList [ ] =initializeAsteroids asteroidNo
 updateAsteroidList asteroids =asteroids
-
+--  | make  Asteroid iinitialize
 initializeAsteroids  :: Float-> [Asteroid]
 initializeAsteroids 0 = []
 initializeAsteroids count =   Asteroid                  -- idk how this worked but it did :D 
     { size = 2
-    , aLocation = ( randX (awidth-count), randY (aheight - count ) )-- rand
-    , aSpeed = (randX asteroidMaxSpeed, randY asteroidMaxSpeed)  -- rand
+    , aLocation = ( rand (awidth-count), rand (aheight - count ) )-- rand
+    , aSpeed = (rand asteroidMaxSpeed , rand asteroidMaxSpeed)  -- rand
     , radius = 80 
     }  : initializeAsteroids (count - 1) 
