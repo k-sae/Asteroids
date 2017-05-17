@@ -68,6 +68,7 @@ updateRotationStates :: Float
 updateRotationStates x rotationState players index = updateRotationStatesHelper index players rotationState x
 
 --handle player interaction according to its index
+-- | 
 updateRotationStatesHelper ::  Int 
  -> [Player] 
  -> Bool 
@@ -77,19 +78,21 @@ updateRotationStatesHelper _ [] _ _ = []
 updateRotationStatesHelper playerIndex (p:players) rotationState x
                                                                   | (pID p) == playerIndex = p {isrotating = rotationState , rotatingBy = x}:updateRotationStatesHelper playerIndex players rotationState x
                                                                   | otherwise = p:updateRotationStatesHelper playerIndex players rotationState x
-updateThrustStatus :: [Player] 
- -> Bool 
- -> Int 
- -> [Player]
+
+-- | update thrust status
+updateThrustStatus :: [Player] -- ^ list of players
+ -> Bool -- ^ status
+ -> Int -- ^ playerIndex
+ -> [Player] -- ^ list of players with updated player
 updateThrustStatus [] _ _  = []
 updateThrustStatus (p:players) state index 
                                           | (pID p) == index = p { isThrusting = state} : updateThrustStatus players state index
                                           | otherwise = p : updateThrustStatus players state index
-
-updateFireStatus :: [Player] 
- -> Bool 
- -> Int 
- ->[Player]
+-- | update firestatus for player 
+updateFireStatus :: [Player] -- ^ list of players
+ -> Bool -- ^ status
+ -> Int -- ^ playerindex
+ ->[Player] -- ^  list of players with updated player
 updateFireStatus [] _ _  = []
 updateFireStatus (p:players) status index 
                                           |(pID p) == index = p { isFiring = status} : updateFireStatus players status index
@@ -149,7 +152,7 @@ updateSpeed player | isThrusting player == True = player{plSpeed = newSpeed (plS
 
 
 -- | add prjoectiles to player 
-updateProjectiles :: AsteroidsGame -- ^current  game
+updateProjectiles :: AsteroidsGame -- ^ current  game
  -> Player -- ^ current player
  -> Player -- ^  player with projectiles updated
 updateProjectiles game  player= player { projectiles = updateProjectilesCount [updateProjectile game projectile player| projectile <- (projectiles player),(prLifeTime projectile) > 0] player,
@@ -175,7 +178,7 @@ initializeProjectile player = Projectile
                               }
 
 -- | change location of projectile  and decrease  life time 
-updateProjectile :: AsteroidsGame -- ^current  game 
+updateProjectile :: AsteroidsGame -- ^ current  game 
  ->  Projectile  -- ^ all projectile 
  -> Player       -- ^ current player
  -> Projectile   -- ^ updated  projectile
