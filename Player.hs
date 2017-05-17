@@ -65,38 +65,35 @@ updateRotationStates :: Float
  -> [Player] 
  -> Int 
  -> [Player] 
-updateRotationStates x rotationState players index = updateRotationStatesHelper index 0 players rotationState x
+updateRotationStates x rotationState players index = updateRotationStatesHelper index players rotationState x
 
 --handle player interaction according to its index
 updateRotationStatesHelper ::  Int 
- -> Int 
  -> [Player] 
  -> Bool 
  -> Float
  -> [Player]
-updateRotationStatesHelper _ _ [] _ _ = [] 
-updateRotationStatesHelper playerIndex startCount (p:players) rotationState x
-                                                                           | startCount == playerIndex = p {isrotating = rotationState , rotatingBy = x}:updateRotationStatesHelper playerIndex (startCount+1) players rotationState x
-                                                                           | otherwise = p:updateRotationStatesHelper playerIndex (startCount+1) players rotationState x
+updateRotationStatesHelper _ [] _ _ = [] 
+updateRotationStatesHelper playerIndex (p:players) rotationState x
+                                                                  | (pID p) == playerIndex = p {isrotating = rotationState , rotatingBy = x}:updateRotationStatesHelper playerIndex players rotationState x
+                                                                  | otherwise = p:updateRotationStatesHelper playerIndex players rotationState x
 updateThrustStatus :: [Player] 
  -> Bool 
  -> Int 
- -> Int 
  -> [Player]
-updateThrustStatus [] _ _ _ = []
-updateThrustStatus (p:players) state index startIndex 
-                                                   | startIndex == index = p { isThrusting = state} : updateThrustStatus players state index (startIndex+1) 
-                                                   | otherwise = p : updateThrustStatus players state index (startIndex+1) 
+updateThrustStatus [] _ _  = []
+updateThrustStatus (p:players) state index 
+                                          | (pID p) == index = p { isThrusting = state} : updateThrustStatus players state index
+                                          | otherwise = p : updateThrustStatus players state index
 
 updateFireStatus :: [Player] 
  -> Bool 
  -> Int 
- -> Int 
  ->[Player]
-updateFireStatus [] _ _ _ = []
-updateFireStatus (p:players) status index startIndex 
-                                                   |startIndex == index = p { isFiring = status} : updateFireStatus players status index (startIndex+1) 
-                                                   |otherwise = p : updateFireStatus players status index (startIndex+1) 
+updateFireStatus [] _ _  = []
+updateFireStatus (p:players) status index 
+                                          |(pID p) == index = p { isFiring = status} : updateFireStatus players status index
+                                          |otherwise = p : updateFireStatus players status index
 
 -- sry for doing this but its working :)
 -- | update player projectiles && speed && rrotation && speed  && location
@@ -111,10 +108,10 @@ rotateBy player |(isrotating player) == True =  player {degree = newdegree}
                 | otherwise = player
  where newdegree = (rotatingBy player) + (degree player)
 
---| update player location  in x and  y
-updteLocationBy :: AsteroidsGame -- ^ current game 
- -> Player --^ current player 
- -> Player --^ updated player location
+-- | update player location  in x and  y
+updateLocationBy :: AsteroidsGame -- ^ current game 
+ -> Player -- ^ current player 
+ -> Player -- ^ updated player location
 updateLocationBy game player = player {plLocation = newLocation (plLocation player)}
                        where newLocation (x,y) = (verifyXLocation game (x + xvelocity (plSpeed player)),verifyYLocation game (y + yvelocity (plSpeed player)))
                              xvelocity (x,_) = x
@@ -140,8 +137,8 @@ verifyYLocation game x
 
 
 -- | update player speed 
-updateSpeed :: Player  --^ current player
- -> Player --^ current player with new speed
+updateSpeed :: Player  -- ^ current player
+ -> Player -- ^ current player with new speed
 updateSpeed player | isThrusting player == True = player{plSpeed = newSpeed (plSpeed player)}
                    | otherwise = player -- EPIC Equation
             where newSpeed (x,y) = (check (x + (cos (degToRad ((degree player) - 180))) * accelerateSpeed),check (y + (sin (degToRad ((degree player)-180))) * accelerateSpeed))
