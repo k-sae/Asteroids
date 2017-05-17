@@ -4,7 +4,8 @@ import Graphics.Gloss.Geometry.Angle
 import Graphics.Gloss.Interface.Pure.Game
 
 
-initializePlayers :: Float -> [Player]
+initializePlayers :: Float  -- ^ number  of player 
+ -> [Player]  -- ^ return new list of player
 initializePlayers 1 = [Player                  -- idk how this worked but it did :D 
     { pID = 1
     , projectiles = []
@@ -94,13 +95,19 @@ updateLocationBy game player = player {plLocation = newLocation (plLocation play
                        where newLocation (x,y) = (verifyXLocation game (x + xvelocity (plSpeed player)),verifyYLocation game (y + yvelocity (plSpeed player)))
                              xvelocity (x,_) = x
                              yvelocity (_,y) = y
-verifyXLocation :: AsteroidsGame -> Float -> Float
+-- |  check  if   location x  equal  max width  return -x  
+verifyXLocation :: AsteroidsGame  -- ^current  game
+ -> Float -- ^ current  x location 
+ -> Float -- ^  new  x location
 verifyXLocation game x 
                  | abs x >= a/2= -x
                  | otherwise = x
                    where a = (gWidth game)
+-- |  check  if   location y  equal max hight  return -y
+verifyYLocation :: AsteroidsGame  -- ^current  game
+  -> Float  -- ^ current  y location 
+ -> Float -- ^  new  y location
 
-verifyYLocation :: AsteroidsGame -> Float -> Float
 verifyYLocation game x 
                  | abs x >= a/2= -x
                  | otherwise = x
