@@ -82,7 +82,7 @@ updateFireStatus (p:players) status index startIndex
 
 
 updatePlayers :: AsteroidsGame -> [Player] -- sry for doing this but its working :) 
-updatePlayers game = [(updateProjectiles.updateSpeed.rotateBy.updateLocationBy game) x|x <- (players game)]
+updatePlayers game = [(updateProjectiles game .updateSpeed.rotateBy.updateLocationBy game) x|x <- (players game)]
 
 rotateBy :: Player -> Player 
 rotateBy player |(isrotating player) == True =  player {degree = newdegree}
@@ -119,8 +119,8 @@ updateSpeed player | isThrusting player == True = player{plSpeed = newSpeed (plS
 
 
 -- u may not need to touch this 
-updateProjectiles :: Player -> Player
-updateProjectiles player = player { projectiles = updateProjectilesCount [updateProjectile projectile player| projectile <- (projectiles player),(prLifeTime projectile) > 0] player,
+updateProjectiles :: AsteroidsGame ->Player-> Player
+updateProjectiles game  player= player { projectiles = updateProjectilesCount [updateProjectile game projectile player| projectile <- (projectiles player),(prLifeTime projectile) > 0] player,
                                    firingSpeed = (firingSpeed player) + 1}
 
 updateProjectilesCount :: [Projectile] -> Player -> [Projectile]
@@ -138,10 +138,11 @@ initializeProjectile player = Projectile
                               }
 
 --update projectile Hazem will have Fun here 
-updateProjectile :: Projectile -> Player -> Projectile
-updateProjectile projectile player = projectile {  prLocation = (fst (prLocation projectile) + (fst (prSpeed projectile) *5)  , snd (prLocation projectile) + (snd (prSpeed projectile) *5))
+updateProjectile :: AsteroidsGame->  Projectile -> Player -> Projectile
+updateProjectile  game projectile player = projectile {  prLocation = newProjectileLocation
                                                  , prLifeTime = prLifeTime projectile - 10 
                                                 }
+                                                where newProjectileLocation =  (verifyXLocation game (fst (prLocation projectile) + (fst (prSpeed projectile) *5)  ), ( verifyYLocation game (snd (prLocation projectile) + (snd (prSpeed projectile) *5))))
 --TODO
 --    1- initialize upon key event
 --    2-
