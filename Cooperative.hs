@@ -11,7 +11,7 @@ updateCooperativeGame :: AsteroidsGame -> AsteroidsGame
 updateCooperativeGame  = updateGamePlayersStates . initializeTwoPlayer
 
 initializeTwoPlayer :: AsteroidsGame -> AsteroidsGame
-initializeTwoPlayer game | length(players game) <= 1 = game{players = initializePlayers 2}
+initializeTwoPlayer game | length(players game) < 1 = game{players = initializePlayers 2}
                          | otherwise = game
 
 -- 'Function Composition'
@@ -21,14 +21,14 @@ updateGamePlayersStates game  = game {players = updatePlayers game
 
 --------Events Hndling
 handleCooperativeKeys :: Event -> AsteroidsGame -> AsteroidsGame
-handleCooperativeKeys (EventKey (SpecialKey KeyRight) Down _ _) game = game { players = updateRotationStates (-rotationSpeed) True (players game) 1}    -- Rotate the ship Clock-Wise when press 'd'
-handleCooperativeKeys (EventKey (SpecialKey KeyRight) Up _ _) game = game { players = updateRotationStates (-rotationSpeed) False (players game) 1}
-handleCooperativeKeys (EventKey (SpecialKey KeyLeft) Down _ _) game = game { players = updateRotationStates (rotationSpeed) True (players game) 1}   -- Rotate the ship Anti_Clock-Wise when press 'a'
-handleCooperativeKeys (EventKey (SpecialKey KeyLeft) Up _ _) game = game { players = updateRotationStates (rotationSpeed) False (players game) 1}
-handleCooperativeKeys (EventKey (SpecialKey KeyUp) Down _ _) game = game {players = updateThrustStatus (players game) True 1 0}
-handleCooperativeKeys (EventKey (SpecialKey KeyUp) Up _ _) game = game {players = updateThrustStatus (players game) False 1 0}
-handleCooperativeKeys (EventKey (SpecialKey KeyCtrlR) Down _ _) game = game {players = updateFireStatus (players game) True 1 0}
-handleCooperativeKeys (EventKey (SpecialKey KeyCtrlR) Up _ _) game = game {players = updateFireStatus (players game) False 1 0}
+handleCooperativeKeys (EventKey (SpecialKey KeyRight) Down _ _) game = game { players = updateRotationStates (-rotationSpeed) True (players game) 2}    -- Rotate the ship Clock-Wise when press 'd'
+handleCooperativeKeys (EventKey (SpecialKey KeyRight) Up _ _) game = game { players = updateRotationStates (-rotationSpeed) False (players game) 2}
+handleCooperativeKeys (EventKey (SpecialKey KeyLeft) Down _ _) game = game { players = updateRotationStates (rotationSpeed) True (players game) 2}   -- Rotate the ship Anti_Clock-Wise when press 'a'
+handleCooperativeKeys (EventKey (SpecialKey KeyLeft) Up _ _) game = game { players = updateRotationStates (rotationSpeed) False (players game) 2}
+handleCooperativeKeys (EventKey (SpecialKey KeyUp) Down _ _) game = game {players = updateThrustStatus (players game) True 2}
+handleCooperativeKeys (EventKey (SpecialKey KeyUp) Up _ _) game = game {players = updateThrustStatus (players game) False 2}
+handleCooperativeKeys (EventKey (SpecialKey KeyCtrlR) Down _ _) game = game {players = updateFireStatus (players game) True 2}
+handleCooperativeKeys (EventKey (SpecialKey KeyCtrlR) Up _ _) game = game {players = updateFireStatus (players game) False 2}
 handleCooperativeKeys _ game = game
 
 coRender :: AsteroidsGame -> Picture
