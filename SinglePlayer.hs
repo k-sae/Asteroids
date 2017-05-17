@@ -37,7 +37,7 @@ spRender game = pictures
    ]
    ++
    [
-      mkFire (projectiles player) | player <- (players game)
+      mkFire (projectiles player) (plColor player) | player <- (players game)
    ]
    ++
    [
@@ -65,8 +65,8 @@ spRender game = pictures
      ]
 
     -- | Display the ship fire
-    mkFire :: [Projectile] -> Picture
-    mkFire projectiles = pictures [translate (fst (prLocation projectile)) (snd (prLocation projectile)) (color red (circleSolid 5)) | projectile <- projectiles]
+    mkFire :: [Projectile] -> Color -> Picture
+    mkFire projectiles col = pictures [translate (fst (prLocation projectile)) (snd (prLocation projectile)) (color col (circleSolid 5)) | projectile <- projectiles]
 
     -- | Display some titles like player's score, lives, etc
     mkTitles :: Float -> Float -> Float -> Color -> Picture

@@ -34,7 +34,8 @@ renderAsteroid game = pictures
     mkAst :: Float -> (Float, Float) -> Picture
     mkAst r (x,y) = pictures
      [
-       (translate x y $ color (greyN 0.2) (circleSolid r))
+       (translate x y $ color (dark $ dark orange) (circleSolid r))
+       ,(translate x y $ color (dark $ dark $ dark orange) (circleSolid (r-5)))
      ]
 
 -- | check if  Asteriod died  initialize Asteroid again 
