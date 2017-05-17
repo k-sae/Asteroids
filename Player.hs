@@ -4,7 +4,8 @@ import Graphics.Gloss.Geometry.Angle
 import Graphics.Gloss.Interface.Pure.Game
 
 
-initializePlayers :: Float -> [Player]
+initializePlayers :: Float  -- ^ number  of player 
+ -> [Player]  -- ^ return new list of player
 initializePlayers 1 = [Player                  -- idk how this worked but it did :D 
     { pID = 1
     , projectiles = []
@@ -60,25 +61,25 @@ initializePlayers 2 = [Player                  -- idk how this worked but it did
 
 --The x value will be the rotatingBy value!
 updateRotationStates :: Float -> Bool -> [Player] -> Int -> [Player] 
-updateRotationStates x rotationState players index = updateRotationStatesHelper index 0 players rotationState x
+updateRotationStates x rotationState players index = updateRotationStatesHelper index players rotationState x
 
 --handle player interaction according to its index
-updateRotationStatesHelper ::  Int -> Int -> [Player] -> Bool -> Float-> [Player]
-updateRotationStatesHelper _ _ [] _ _ = [] 
-updateRotationStatesHelper playerIndex startCount (p:players) rotationState x
-                                                                           | startCount == playerIndex = p {isrotating = rotationState , rotatingBy = x}:updateRotationStatesHelper playerIndex (startCount+1) players rotationState x
-                                                                           | otherwise = p:updateRotationStatesHelper playerIndex (startCount+1) players rotationState x
-updateThrustStatus :: [Player] -> Bool -> Int -> Int -> [Player]
-updateThrustStatus [] _ _ _ = []
-updateThrustStatus (p:players) state index startIndex 
-                                                   | startIndex == index = p { isThrusting = state} : updateThrustStatus players state index (startIndex+1) 
-                                                   | otherwise = p : updateThrustStatus players state index (startIndex+1) 
+updateRotationStatesHelper ::  Int -> [Player] -> Bool -> Float-> [Player]
+updateRotationStatesHelper _ [] _ _ = [] 
+updateRotationStatesHelper playerIndex (p:players) rotationState x
+                                                                  | (pID p) == playerIndex = p {isrotating = rotationState , rotatingBy = x}:updateRotationStatesHelper playerIndex players rotationState x
+                                                                  | otherwise = p:updateRotationStatesHelper playerIndex players rotationState x
+updateThrustStatus :: [Player] -> Bool -> Int -> [Player]
+updateThrustStatus [] _ _  = []
+updateThrustStatus (p:players) state index 
+                                          | (pID p) == index = p { isThrusting = state} : updateThrustStatus players state index
+                                          | otherwise = p : updateThrustStatus players state index
 
-updateFireStatus :: [Player] -> Bool -> Int -> Int ->[Player]
-updateFireStatus [] _ _ _ = []
-updateFireStatus (p:players) status index startIndex 
-                                                   |startIndex == index = p { isFiring = status} : updateFireStatus players status index (startIndex+1) 
-                                                   |otherwise = p : updateFireStatus players status index (startIndex+1) 
+updateFireStatus :: [Player] -> Bool -> Int ->[Player]
+updateFireStatus [] _ _  = []
+updateFireStatus (p:players) status index 
+                                          |(pID p) == index = p { isFiring = status} : updateFireStatus players status index
+                                          |otherwise = p : updateFireStatus players status index
 
 
 updatePlayers :: AsteroidsGame -> [Player] -- sry for doing this but its working :) 
@@ -94,13 +95,19 @@ updateLocationBy game player = player {plLocation = newLocation (plLocation play
                        where newLocation (x,y) = (verifyXLocation game (x + xvelocity (plSpeed player)),verifyYLocation game (y + yvelocity (plSpeed player)))
                              xvelocity (x,_) = x
                              yvelocity (_,y) = y
-verifyXLocation :: AsteroidsGame -> Float -> Float
+-- |  check  if   location x  equal  max width  return -x  
+verifyXLocation :: AsteroidsGame  -- ^current  game
+ -> Float -- ^ current  x location 
+ -> Float -- ^  new  x location
 verifyXLocation game x 
                  | abs x >= a/2= -x
                  | otherwise = x
                    where a = (gWidth game)
+-- |  check  if   location y  equal max hight  return -y
+verifyYLocation :: AsteroidsGame  -- ^current  game
+  -> Float  -- ^ current  y location 
+ -> Float -- ^  new  y location
 
-verifyYLocation :: AsteroidsGame -> Float -> Float
 verifyYLocation game x 
                  | abs x >= a/2= -x
                  | otherwise = x

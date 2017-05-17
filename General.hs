@@ -20,12 +20,12 @@ updateGameBasedOnMode game  | (gameMode game) == Single = SinglePlayer.updateSin
 
 
 projectilesCollision :: AsteroidsGame -> AsteroidsGame
-projectilesCollision game = updatePlayerCollision (players game) $ game {players = []}
+projectilesCollision game = checkDeadPlayers . updatePlayerCollision (players game) $ game {players = []} 
                          
 
 updatePlayerCollision :: [Player] -> AsteroidsGame -> AsteroidsGame
 updatePlayerCollision [] game = game
-updatePlayerCollision (p:ps) game = updatePlayerCollision ps $ (checkDeadPlayers game (p:ps)) { asteroids = (hAsteroids plAstCollision), players = bindPlayers}
+updatePlayerCollision (p:ps) game = updatePlayerCollision ps $ game { asteroids = (hAsteroids plAstCollision), players = bindPlayers}
                                      where prAstCollision = projectilesCollisionHelper (projectiles (p)) Holder{hProjectiles = [], hAsteroids = (asteroids game), noOfCollision = 0, hPlayer = p}
                                            bindPlayers = (players game) ++ [(hPlayer plAstCollision)]
                                            plAstCollision = General.updatePlayerAsteroidCollision updateP  (hAsteroids prAstCollision) Holder {hProjectiles = [], hAsteroids = [], noOfCollision = 0, hPlayer = updateP} 
@@ -34,18 +34,25 @@ updatePlayerCollision (p:ps) game = updatePlayerCollision ps $ (checkDeadPlayers
 deadPlayers :: AsteroidsGame -> [Player] -> [Player]
 deadPlayers game players = [ player | player <- players, (lives player) <=0] 
 
-checkDeadPlayers :: AsteroidsGame -> [Player]-> AsteroidsGame
-checkDeadPlayers game players
+checkDeadPlayers :: AsteroidsGame -> AsteroidsGame
+checkDeadPlayers game
  | dead == [] = game
  | (gameMode game) == Single =  game{gameMode = GameOver}
  | (gameMode game) == Cooperative = cooperativeDeadPlayers game dead
  | otherwise = game
  where
-  dead = (deadPlayers game players)
+  dead = (deadPlayers game (players game))
 
 cooperativeDeadPlayers :: AsteroidsGame -> [Player] -> AsteroidsGame
---cooperativeDeadPlayers game [x] = game{players = []} -- if one player is dead and the another is not
-cooperativeDeadPlayers game players = game{gameMode = GameOver}
+cooperativeDeadPlayers game [x]
+ | (length (players game)) > 1 = game{players = removePlayer x (players game)} -- if one player is dead and the another is not
+ | otherwise = game{gameMode = GameOver}
+--cooperativeDeadPlayers game players = game{gameMode = GameOver}
+
+removePlayer :: Player -> [Player] -> [Player]
+removePlayer pl (p:ps)
+ | pl == p = ps
+ | otherwise = p : removePlayer pl ps 
 
 projectilesCollisionHelper ::  [Projectile] -> Holder  -> Holder
 projectilesCollisionHelper [] holder = holder
@@ -73,8 +80,10 @@ updatePlayerAsteroidCollision player (a:as) holder
 
 
 
-
-breakAsteroid :: Asteroid ->Float->[Asteroid] 
+-- |  split   Asteroid to    tow  part
+breakAsteroid :: Asteroid  -- ^ Asteroid want  split
+ ->Float -- ^count  of part
+ ->[Asteroid] -- ^ list  of new Asteroids 
 breakAsteroid  asteroid count 
   |count == 0 ||  (size asteroid)  == 0 =[ ]
 breakAsteroid asteroid  count=asteroid{
@@ -89,17 +98,17 @@ breakAsteroid asteroid  count=asteroid{
 
 --------Events Hndling
 handleGeneralKeys :: Event -> AsteroidsGame -> AsteroidsGame
-handleGeneralKeys (EventKey (Char 'd') Down _ _) game = game { players = updateRotationStates (-rotationSpeed) True (players game) 0}    -- Rotate the ship Clock-Wise when press 'd'
-handleGeneralKeys (EventKey (Char 'd') Up _ _) game = game { players = updateRotationStates (-rotationSpeed) False (players game) 0}
-handleGeneralKeys (EventKey (Char 'a') Down _ _) game = game { players = updateRotationStates (rotationSpeed) True (players game) 0}   -- Rotate the ship Anti_Clock-Wise when press 'a'
-handleGeneralKeys (EventKey (Char 'a') Up _ _) game = game { players = updateRotationStates (rotationSpeed) False (players game) 0}
+handleGeneralKeys (EventKey (Char 'd') Down _ _) game = game { players = updateRotationStates (-rotationSpeed) True (players game) 1}    -- Rotate the ship Clock-Wise when press 'd'
+handleGeneralKeys (EventKey (Char 'd') Up _ _) game = game { players = updateRotationStates (-rotationSpeed) False (players game) 1}
+handleGeneralKeys (EventKey (Char 'a') Down _ _) game = game { players = updateRotationStates (rotationSpeed) True (players game) 1}   -- Rotate the ship Anti_Clock-Wise when press 'a'
+handleGeneralKeys (EventKey (Char 'a') Up _ _) game = game { players = updateRotationStates (rotationSpeed) False (players game) 1}
 handleGeneralKeys (EventKey (Char 'p') Down _ _) game = game {gameMode = Pause}   -- Pause the game when press 'p'
 handleGeneralKeys (EventKey (Char 'q') Down _ _) game = game {gameMode = Menu}   -- Return to the menu and quit the game when press 'q'
-handleGeneralKeys (EventKey (Char 'w') Down _ _) game = game {players = updateThrustStatus (players game) True 0 0}
-handleGeneralKeys (EventKey (Char 'w') Up _ _) game = game {players = updateThrustStatus (players game) False 0 0}
+handleGeneralKeys (EventKey (Char 'w') Down _ _) game = game {players = updateThrustStatus (players game) True 1}
+handleGeneralKeys (EventKey (Char 'w') Up _ _) game = game {players = updateThrustStatus (players game) False 1}
 handleGeneralKeys (EventResize (w,h)) game = game {gWidth = (fromIntegral w) , gHeight = (fromIntegral h)}
-handleGeneralKeys (EventKey (SpecialKey KeySpace) Down _ _) game = game {players = updateFireStatus (players game) True 0 0}
-handleGeneralKeys (EventKey (SpecialKey KeySpace) Up _ _) game = game {players = updateFireStatus (players game) False 0 0}
+handleGeneralKeys (EventKey (SpecialKey KeySpace) Down _ _) game = game {players = updateFireStatus (players game) True 1}
+handleGeneralKeys (EventKey (SpecialKey KeySpace) Up _ _) game = game {players = updateFireStatus (players game) False 1}
 handleGeneralKeys event game
                             | (gameMode game) == Single = handleSingleplayerKeys event game
                             | (gameMode game) == Cooperative = handleCooperativeKeys event game 
