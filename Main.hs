@@ -1,4 +1,4 @@
-module Main(main) where
+module Main(main, initialState, update, handleKeys, render) where
 import Graphics.Gloss
 import Graphics.Gloss.Interface.Pure.Game
 import Shapes
@@ -22,6 +22,7 @@ background = black
 fps :: Int
 fps = 60
 
+-- | main function example for testing :)
 main :: IO ()
 main = play window background fps initialState render handleKeys update
 
@@ -64,9 +65,4 @@ render game
  | (gameMode game) == Menu = menuRender game
 
  | (gameMode game) == Pause = pauseRender game
-
--- | (gameMode game) == Single = spRender game
-
--- | (gameMode game) == Cooperative = coRender game
-
  | otherwise = generalRender game
