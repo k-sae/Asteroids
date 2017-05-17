@@ -23,14 +23,14 @@ background = black
 fps :: Int
 fps = 60
 
--- | main function example for testing :)
+-- | main function holdes the gloss required functions
 main :: IO ()
 main = play window background fps initialState render handleKeys update
 
 ------------------- Basic Functions --
 
---initialize the states of the game
-initialState :: AsteroidsGame -- ^ example 2
+-- | initialize the states of the game
+initialState :: AsteroidsGame -- ^ initialized game
 initialState    = Game
    { players    = []  
     , gameMode  = Menu
@@ -41,26 +41,22 @@ initialState    = Game
 
 
 -- | update the game according to the Game Mode.
---
--- sample output: 
---
--- >>> update args1 args2
--- result
-update :: Float -- ^ example 3
- -> AsteroidsGame -- ^ example 3
- -> AsteroidsGame -- ^ example 3                      
+update :: Float -- ^ game speed 
+ -> AsteroidsGame -- ^ current game state
+ -> AsteroidsGame -- ^ updated game stare             
 update seconds game | (gameMode game) == Menu = updateMenu seconds game initialState
                     | (gameMode game) == Pause = updatePause seconds game
                     | (gameMode game) == GameOver = updateGameOver seconds game
                     | otherwise = General.updateGeneralGame game
 
--- handle game events like thrust button etc
 
 
 --EventKey Key KeyState Modifiers (Float, Float) 
 --ref:: https://hackage.haskell.org/package/gloss-1.11.1.1/docs/Graphics-Gloss-Interface-IO-Game.html
 -- | Handle the key events according to the Game Mode.
-handleKeys :: Event -> AsteroidsGame -> AsteroidsGame
+handleKeys :: Event -- ^ gloss event 
+ -> AsteroidsGame   -- ^ current game state
+ -> AsteroidsGame   -- ^ updated game state
 handleKeys event game
                        | mode == Menu = handleMenuKeys event game          --same as the update function here u call the appropriate key events 
                        | mode == Pause = handlePauseKeys event game
