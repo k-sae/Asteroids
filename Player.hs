@@ -118,18 +118,23 @@ updateSpeed player | isThrusting player == True = player{plSpeed = newSpeed (plS
 
 
 
--- u may not need to touch this 
-updateProjectiles :: AsteroidsGame ->Player-> Player
+-- | add prjoectiles to player 
+updateProjectiles :: AsteroidsGame 
+ -> Player
+ -> Player
 updateProjectiles game  player= player { projectiles = updateProjectilesCount [updateProjectile game projectile player| projectile <- (projectiles player),(prLifeTime projectile) > 0] player,
                                    firingSpeed = (firingSpeed player) + 1}
-
-updateProjectilesCount :: [Projectile] -> Player -> [Projectile]
+-- | check projectile before adding to player
+updateProjectilesCount :: [Projectile] 
+ -> Player 
+ -> [Projectile]
 updateProjectilesCount projectiles player 
                                          | (isFiring player) == False = projectiles
                                          | (firingSpeed player) `mod` 15 ==0 = initializeProjectile player : projectiles
                                          | otherwise = projectiles
-
-initializeProjectile :: Player -> Projectile
+-- | make a new projectile 
+initializeProjectile :: Player 
+ -> Projectile
 initializeProjectile player = Projectile
                               {
                                  prLocation = (plLocation player)
@@ -137,12 +142,12 @@ initializeProjectile player = Projectile
                                 ,prLifeTime = 600
                               }
 
---update projectile Hazem will have Fun here 
-updateProjectile :: AsteroidsGame->  Projectile -> Player -> Projectile
+-- | change location of projectile  and decrease  life time 
+updateProjectile :: AsteroidsGame
+ ->  Projectile 
+ -> Player 
+ -> Projectile
 updateProjectile  game projectile player = projectile {  prLocation = newProjectileLocation
                                                  , prLifeTime = prLifeTime projectile - 10 
                                                 }
                                                 where newProjectileLocation =  (verifyXLocation game (fst (prLocation projectile) + (fst (prSpeed projectile) *5)  ), ( verifyYLocation game (snd (prLocation projectile) + (snd (prSpeed projectile) *5))))
---TODO
---    1- initialize upon key event
---    2-
