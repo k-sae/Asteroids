@@ -5,6 +5,7 @@ import Shapes
 import DataTypes
 import MainMenu
 import Pause
+import GameOver
 import General
 import SinglePlayer
 import Player
@@ -50,6 +51,7 @@ update :: Float -- ^ example 3
  -> AsteroidsGame -- ^ example 3                      
 update seconds game | (gameMode game) == Menu = updateMenu seconds initialState  -- call the update menue from MainMenu.hs file
                     | (gameMode game) == Pause = updatePause seconds game
+                    | (gameMode game) == GameOver = updateGameOver seconds game
                     | otherwise = General.updateGeneralGame game
 
 -- handle game events like thrust button etc
@@ -61,6 +63,7 @@ handleKeys :: Event -> AsteroidsGame -> AsteroidsGame
 handleKeys event game
                        | mode == Menu = handleMenuKeys event game          --same as the update function here u call the appropriate key events 
                        | mode == Pause = handlePauseKeys event game
+                       | mode == GameOver = handleGameOverKeys event game
                        | otherwise = handleGeneralKeys event game
                   where mode = gameMode game
 
@@ -69,6 +72,6 @@ render :: AsteroidsGame  --- update the render like the update function in order
        -> Picture   --TODO BELBEL splite render function to different files for better organization
 render game 
  | (gameMode game) == Menu = menuRender game
-
  | (gameMode game) == Pause = pauseRender game
+ | (gameMode game) == GameOver = gameOverRender game
  | otherwise = generalRender game

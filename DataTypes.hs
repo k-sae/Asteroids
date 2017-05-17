@@ -61,7 +61,7 @@ data CollisionItem = CollisionItem
      { cPlayers :: Player,
        cAsteroid :: Asteroid
      }
-data GameMode = Menu | Pause | Single | Cooperative | Versus deriving Eq  -- deriving Eq so the gamemodes will be comparable
+data GameMode = Menu | Pause | GameOver | Single | Cooperative | Versus deriving Eq  -- deriving Eq so the gamemodes will be comparable
 
 
 data Holder = Holder 

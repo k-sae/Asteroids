@@ -25,11 +25,27 @@ projectilesCollision game = updatePlayerCollision (players game) $ game {players
 
 updatePlayerCollision :: [Player] -> AsteroidsGame -> AsteroidsGame
 updatePlayerCollision [] game = game
-updatePlayerCollision (p:ps) game = updatePlayerCollision ps $ game { asteroids = (hAsteroids plAstCollision), players = bindPlayers}
+updatePlayerCollision (p:ps) game = updatePlayerCollision ps $ (checkDeadPlayers game (p:ps)) { asteroids = (hAsteroids plAstCollision), players = bindPlayers}
                                      where prAstCollision = projectilesCollisionHelper (projectiles (p)) Holder{hProjectiles = [], hAsteroids = (asteroids game), noOfCollision = 0, hPlayer = p}
                                            bindPlayers = (players game) ++ [(hPlayer plAstCollision)]
                                            plAstCollision = General.updatePlayerAsteroidCollision updateP  (hAsteroids prAstCollision) Holder {hProjectiles = [], hAsteroids = [], noOfCollision = 0, hPlayer = updateP} 
                                            updateP = p {projectiles = (hProjectiles prAstCollision), score = (noOfCollision prAstCollision)*10 + (score p), lives = (lives (hPlayer prAstCollision))}
+
+deadPlayers :: AsteroidsGame -> [Player] -> [Player]
+deadPlayers game players = [ player | player <- players, (lives player) <=0] 
+
+checkDeadPlayers :: AsteroidsGame -> [Player]-> AsteroidsGame
+checkDeadPlayers game players
+ | dead == [] = game
+ | (gameMode game) == Single =  game{gameMode = GameOver}
+ | (gameMode game) == Cooperative = cooperativeDeadPlayers game dead
+ | otherwise = game
+ where
+  dead = (deadPlayers game players)
+
+cooperativeDeadPlayers :: AsteroidsGame -> [Player] -> AsteroidsGame
+--cooperativeDeadPlayers game [x] = game{players = []} -- if one player is dead and the another is not
+cooperativeDeadPlayers game players = game{gameMode = GameOver}
 
 projectilesCollisionHelper ::  [Projectile] -> Holder  -> Holder
 projectilesCollisionHelper [] holder = holder
