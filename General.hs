@@ -91,7 +91,7 @@ distance (x1,y1) (x2,y2) =  sqrt ((x1 - x2)^2 + (y1 - y2)^2)
 updatePlayerAsteroidCollision:: Player -> [Asteroid] -> Holder -> Holder
 updatePlayerAsteroidCollision _ [] holder = holder
 updatePlayerAsteroidCollision player (a:as) holder 
-                                                  | distance (aLocation a) playerLocation <= (radius a) = General.updatePlayerAsteroidCollision player as holder { hPlayer = updateCollidedPlayer (hPlayer holder)}  
+                                                  | distance (aLocation a) playerLocation <= (radius a) && (lives player) /= 0 = General.updatePlayerAsteroidCollision player as holder { hPlayer = updateCollidedPlayer (hPlayer holder)}  
                                                   | otherwise =   General.updatePlayerAsteroidCollision player as holder {hAsteroids =  a : (hAsteroids holder)} 
                             where playerLocation = (plLocation (hPlayer holder))
                                   updateCollidedPlayer player = player { plLocation = (0,0), plSpeed = (0,0), lives = (lives player) - 1} 
